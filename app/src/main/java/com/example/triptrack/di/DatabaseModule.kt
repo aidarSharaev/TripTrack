@@ -1,4 +1,4 @@
-package com.example.triptrack.data.local.dao.di
+package com.example.triptrack.di
 
 import android.content.Context
 import androidx.room.Room

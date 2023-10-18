@@ -12,4 +12,7 @@ object Constants {
   const val ORDER_TABLE = "order_table"
   const val TRIP_TRACK_DATABASE = "trip_track_database"
 
+  const val DATA_STORE = "data_store"
+  const val APP_ENTRY = "app_entry"
+
 }

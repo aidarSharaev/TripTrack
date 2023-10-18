@@ -84,6 +84,7 @@ dependencies {
     //dagger hilt
     implementation 'com.google.dagger:hilt-android:2.45'
     kapt 'com.google.dagger:hilt-android-compiler:2.45'
+    implementation 'androidx.hilt:hilt-navigation-compose:1.0.0'
 
     //room
     implementation 'androidx.room:room-runtime:2.5.2'
@@ -95,5 +96,8 @@ dependencies {
 
     //data store
     implementation("androidx.datastore:datastore-preferences:1.0.0")
+
+    //pager
+    implementation "com.google.accompanist:accompanist-systemuicontroller:0.31.4-beta"
 
 }
