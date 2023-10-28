@@ -13,7 +13,8 @@ data class BankData(
   val recipientBank: String,
   val bik: String,
   val correspondentAccount: String,
-  val inn: String,
   val kpp: String,
-  val swift: String
+  val swift: String,
+  val snils: String,
+  val inn: String
 )

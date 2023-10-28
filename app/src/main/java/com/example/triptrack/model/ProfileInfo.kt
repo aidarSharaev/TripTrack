@@ -19,9 +19,6 @@ data class ProfileInfo(
   val id: Int,
   val firstName: String,
   val lastName: String,
-  val patronymic: String,
   @ColumnInfo(index = true)
   val recipientId: Int,
-  val snils: String,
-  val inn: String
 )

@@ -1,4 +1,4 @@
-package com.example.triptrack.domain.manager.usecaces
+package com.example.triptrack.domain.usecaces.app_entry
 
 import com.example.triptrack.domain.manager.LocalUserManager
 import kotlinx.coroutines.flow.Flow
@@ -7,7 +7,7 @@ class ReadAppEntry(
   private val localUserManager: LocalUserManager
 ) {
 
-  suspend operator fun invoke(): Flow<Boolean> {
+  operator fun invoke(): Flow<Boolean> {
     return localUserManager.readAppEntry()
   }
 

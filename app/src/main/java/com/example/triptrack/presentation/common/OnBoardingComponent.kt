@@ -1,4 +1,4 @@
-package com.example.triptrack.presentation.onboarding.component.common
+package com.example.triptrack.presentation.common
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -24,8 +24,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.triptrack.presentation.onboarding.OnBoardingEvent
 import com.example.triptrack.presentation.onboarding.Page
-import com.example.triptrack.presentation.onboarding.component.BottomButton
-import com.example.triptrack.presentation.onboarding.component.Indicator
+import com.example.triptrack.presentation.component.BottomButton
+import com.example.triptrack.presentation.component.Indicator
 
 @Composable
 fun TopComponent(
@@ -75,7 +75,7 @@ fun BottomComponent(
         .padding(start = 15.dp, bottom = 15.dp),
       contentAlignment = Alignment.BottomStart
     ) {
-      Indicator(pageSize, pagerState.currentPage)
+      Indicator(pageSize = pageSize, selectedPage = pagerState.currentPage)
     }
     Box(
       contentAlignment = Alignment.BottomEnd
@@ -83,7 +83,12 @@ fun BottomComponent(
       Row(
         modifier = Modifier.padding(bottom = 15.dp)
       ) {
-        BottomButton(buttonValue = buttonValue, pagerState = pagerState, pageSize = pageSize, event = event)
+        BottomButton(
+          buttonValue = buttonValue,
+          pagerState = pagerState,
+          pageSize = pageSize,
+          event = event
+        )
       }
     }
   }

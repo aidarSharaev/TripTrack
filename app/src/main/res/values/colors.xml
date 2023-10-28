@@ -7,4 +7,16 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="shimmer">#9B9999</color>
+    <color name="order_card">#1E90FF</color>
+    <color name="order_card_night">#1D1E33</color>
+    <color name="order_info">#426F0F</color>
+    <color name="text_color">#F8F8FF</color>
+    <color name="text_color_night">#0A0A0A</color>
+    <color name="button_color">#29AB87</color>
+    <color name="auto_complete_light">#2464E1</color>
+    <color name="auto_complete_night">#343E40</color>
+    <color name="check_box">#1560BD</color>
+
+
 </resources>

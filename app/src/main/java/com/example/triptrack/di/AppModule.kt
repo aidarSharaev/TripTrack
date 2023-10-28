@@ -3,8 +3,9 @@ package com.example.triptrack.di
 import android.app.Application
 import com.example.triptrack.data.manager.LocalUserManagerImpl
 import com.example.triptrack.domain.manager.LocalUserManager
-import com.example.triptrack.domain.manager.usecaces.ReadAppEntry
-import com.example.triptrack.domain.manager.usecaces.SaveAppEntry
+import com.example.triptrack.domain.usecaces.app_entry.AppEntryUseCases
+import com.example.triptrack.domain.usecaces.app_entry.ReadAppEntry
+import com.example.triptrack.domain.usecaces.app_entry.SaveAppEntry
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

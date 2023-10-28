@@ -1,4 +1,4 @@
-package com.example.triptrack.presentation.onboarding.component
+package com.example.triptrack.presentation.component
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.pager.HorizontalPager
@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import com.example.triptrack.presentation.onboarding.OnBoardingEvent
-import com.example.triptrack.presentation.onboarding.component.common.BottomComponent
+import com.example.triptrack.presentation.common.BottomComponent
 import com.example.triptrack.presentation.onboarding.pagesList
 
 @OptIn(ExperimentalFoundationApi::class)

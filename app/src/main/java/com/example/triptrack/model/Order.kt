@@ -5,14 +5,13 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.example.triptrack.utils.Constants.ORDER_TABLE
-import java.sql.Date
 
 @Entity(tableName = ORDER_TABLE,
   foreignKeys = [
     ForeignKey(
       entity = Employer::class,
-      childColumns = ["employerId"],
-      parentColumns = ["id"],
+      childColumns = ["employerDescription"],
+      parentColumns = ["description"],
       onDelete = ForeignKey.SET_DEFAULT,
       onUpdate = ForeignKey.SET_DEFAULT
     )
@@ -20,9 +19,9 @@ import java.sql.Date
 )
 data class Order(
   @PrimaryKey(autoGenerate = true)
-  val id: Int,
+  val id: Int = 0,
   @ColumnInfo(index = true)
-  val employerId: Int,
+  val employerDescription: String? = null,
   val route: String,
   val payment: Boolean,
   val tax: Boolean,

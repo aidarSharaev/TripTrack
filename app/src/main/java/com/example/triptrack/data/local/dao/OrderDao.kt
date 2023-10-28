@@ -1,5 +1,6 @@
 package com.example.triptrack.data.local.dao
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -10,11 +11,11 @@ import com.example.triptrack.utils.Constants.ORDER_TABLE
 
 @Dao
 interface OrderDao {
+//todo desc
+  @Query(value = "select * from $ORDER_TABLE order by id asc")
+  fun loadAllOrdersPaged(): PagingSource<Int, Order>
 
-  @Query("select * from $ORDER_TABLE")
-  suspend fun getAllOrder(): List<Order>
-
-  @Query("select * from $ORDER_TABLE where id = :id")
+  @Query(value = "select * from $ORDER_TABLE where id = :id")
   suspend fun getOrderById(id: Int): Order
 
   @Insert(onConflict = OnConflictStrategy.REPLACE)

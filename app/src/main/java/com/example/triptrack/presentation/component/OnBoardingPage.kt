@@ -1,4 +1,4 @@
-package com.example.triptrack.presentation.onboarding.component
+package com.example.triptrack.presentation.component
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -27,10 +27,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.triptrack.presentation.onboarding.OnBoardingEvent
 import com.example.triptrack.presentation.onboarding.Page
-import com.example.triptrack.presentation.onboarding.component.common.TopComponent
+import com.example.triptrack.presentation.common.TopComponent
 import kotlinx.coroutines.launch
-
-
 
 
 @Composable
@@ -44,7 +42,6 @@ fun OnBoardingPage(
     TopComponent(page)
   }
 }
-
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -64,7 +61,8 @@ fun BottomButton(
       },
       shape = MaterialTheme.shapes.medium
     ) {
-      Text(text = buttonValue[0], fontSize = 12.sp
+      Text(
+        text = buttonValue[0], fontSize = 12.sp
       )
     }
   }
@@ -72,7 +70,7 @@ fun BottomButton(
   Button(
     onClick = {
       scope.launch {
-        if (pagerState.currentPage != pageSize - 1)
+        if(pagerState.currentPage != pageSize - 1)
           pagerState.animateScrollToPage(page = pagerState.currentPage + 1)
         else
           event(OnBoardingEvent.SaveAppEntry)
@@ -81,11 +79,11 @@ fun BottomButton(
     modifier = Modifier.padding(end = 15.dp),
     shape = RoundedCornerShape(size = 5.dp),
   ) {
-    Text(text = buttonValue[1], fontSize = 12.sp
+    Text(
+      text = buttonValue[1], fontSize = 12.sp
     )
   }
 }
-
 
 @Composable
 fun Indicator(

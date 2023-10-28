@@ -1,5 +1,6 @@
 package com.example.triptrack.data.local.dao
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -12,10 +13,10 @@ import com.example.triptrack.utils.Constants.EMPLOYER_TABLE
 interface EmployerDao {
 
   @Query("select * from $EMPLOYER_TABLE")
-  suspend fun getAllEmployer(): List<Employer>
+  fun loadAllEmployersPaged(): PagingSource<Int, Employer>
 
-  @Query("select * from $EMPLOYER_TABLE where id = :id")
-  suspend fun getEmployerById(id: Int): Employer
+  @Query("select * from $EMPLOYER_TABLE where description = :description")
+  suspend fun getEmployerById(description: String): Employer
 
   @Insert(onConflict = OnConflictStrategy.REPLACE)
   suspend fun insertEmployer(employer: Employer)

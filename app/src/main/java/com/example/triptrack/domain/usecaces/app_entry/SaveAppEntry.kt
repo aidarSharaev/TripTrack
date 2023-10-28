@@ -1,4 +1,4 @@
-package com.example.triptrack.domain.manager.usecaces
+package com.example.triptrack.domain.usecaces.app_entry
 
 import com.example.triptrack.domain.manager.LocalUserManager
 
