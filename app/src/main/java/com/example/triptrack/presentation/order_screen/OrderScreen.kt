@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import com.example.triptrack.model.Order
@@ -28,13 +29,13 @@ fun OrderScreen(
 
 }
 
-//@Composable
-//@Preview(showBackground = true)
-//fun F() {
-//  OrderScreen(
-//    Order(id = 123, route = "Челны", payment = true, tax = true, date = "23-01-2003", income = 15000, wastes = 3000, profit = -12000) as LazyPagingItems<Order>
-//  )
-//}
+@Composable
+@Preview(showBackground = true)
+fun F() {
+  OrderScreen(
+    Order(id = 123, route = "Челны", payment = true, tax = true, date = "23-01-2003", income = 15000, wastes = 3000, profit = -12000) as LazyPagingItems<Order>
+  )
+}
 
 
 //TODO(REPLACE ARGS)

@@ -16,6 +16,7 @@ sealed class Route(
   object OrderListScreen : Route(route = "onBoardingScreen")
   object EmployerListScreen : Route(route = "employerListScreen")
   object NewEmployerScreen : Route(route = "newEmployerScreen")
+  object FirstEntryScreen : Route(route = "firstEntryScreen")
 
 }
 

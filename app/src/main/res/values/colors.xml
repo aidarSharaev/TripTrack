@@ -17,6 +17,9 @@
     <color name="auto_complete_light">#2464E1</color>
     <color name="auto_complete_night">#343E40</color>
     <color name="check_box">#1560BD</color>
+    <color name="tool_tip">#ABCDEF</color>
+
+
 
 
 </resources>
