@@ -3,6 +3,8 @@ package com.example.triptrack.presentation.order_screen
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,6 +19,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
@@ -110,7 +113,7 @@ fun NewOrderScreen(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
       ) {
-        Text(modifier = Modifier.padding(start = 20.dp), text = "Итого: ${1000-7}")
+        Text(modifier = Modifier.padding(start = 20.dp), text = "Итого: ${1000 - 7}")
       }
       TextButton(
         onClick = { /*TODO*/ },
@@ -120,7 +123,8 @@ fun NewOrderScreen(
           .padding(top = 20.dp)
           .size(
             width = 120.dp,
-            height = 48.dp)
+            height = 48.dp
+          )
           .align(Alignment.CenterHorizontally),
         shape = RoundedCornerShape(20.dp),
         elevation = ButtonDefaults.buttonElevation(
@@ -210,9 +214,6 @@ fun NewOrderCard(checked: MutableState<Boolean>) {
 }
 
 
-
-
-
 @Composable
 @Preview(showBackground = true)
 fun NewOrderScreenPreview() {
@@ -223,14 +224,19 @@ fun NewOrderScreenPreview() {
 @Composable
 fun ButtonWithMoneyValue(text: String) {
   Button(
+    shape = RoundedCornerShape(5.dp),
     onClick = { /*TODO*/ },
     modifier = Modifier
-      .clip(shape = RoundedCornerShape(5.dp))
       .border(
         width = 1.dp,
         color = colorResource(
           id = R.color.tool_tip
-        ),
+        )
+      )
+      .clickable(
+        interactionSource = remember { MutableInteractionSource() },
+        indication = rememberRipple(bounded = false),
+        onClick = {}
       )
       .height(35.dp)
       .animateContentSize(),

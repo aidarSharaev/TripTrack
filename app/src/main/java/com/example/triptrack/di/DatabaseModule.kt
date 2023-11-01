@@ -7,7 +7,6 @@ import com.example.triptrack.data.local.dao.EmployerDao
 import com.example.triptrack.data.local.dao.OrderDao
 import com.example.triptrack.data.local.dao.ProfileInfoDao
 import com.example.triptrack.data.local.dao.TripTrackDatabase
-import com.example.triptrack.data.repository.OrderRepositoryImpl
 import com.example.triptrack.domain.repository.OrderRepository
 import com.example.triptrack.domain.usecaces.local_data.bank_data.BankDataUseCases
 import com.example.triptrack.domain.usecaces.local_data.bank_data.InsertBankData
@@ -26,6 +25,7 @@ import com.example.triptrack.domain.usecaces.local_data.order.OrderUseCases
 import com.example.triptrack.domain.usecaces.local_data.profile_info.GetProfile
 import com.example.triptrack.domain.usecaces.local_data.profile_info.InsertProfile
 import com.example.triptrack.domain.usecaces.local_data.profile_info.ProfileUseCases
+import com.example.triptrack.remote.repository.OrderRepositoryImpl
 import com.example.triptrack.utils.Constants.TRIP_TRACK_DATABASE
 import dagger.Module
 import dagger.Provides
