@@ -1,12 +1,14 @@
 package com.example.triptrack.presentation.navgraph
 
 import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import com.example.triptrack.presentation.order_screen.FirstEntryScreen
-import com.example.triptrack.presentation.order_screen.NewOrderScreen
+import com.example.triptrack.presentation.onboarding.OnBoardingScreen
+import com.example.triptrack.presentation.onboarding.OnBoardingViewModel
+
 
 @Composable
 fun NavGraph(
@@ -19,23 +21,18 @@ fun NavGraph(
       startDestination = Route.OnBoardingScreen.route
     ) {
       composable(route = Route.OnBoardingScreen.route) {
-        //val viewModel: OnBoardingViewModel = hiltViewModel()
-//        OnBoardingScreen(
-//          event = viewModel::onEvent
-//        )
-        FirstEntryScreen()
+        val viewModel: OnBoardingViewModel = hiltViewModel()
+        OnBoardingScreen(event = viewModel::onEvent)
       }
     }
-
     navigation(
       route = Route.HomeScreenNavigation.route,
-      startDestination = Route.OrderListScreen.route
+      startDestination = Route.HomeScreen.route
     ) {
       composable(
-        route = Route.OrderListScreen.route
+        route = Route.HomeScreen.route
       ) {
-        NewOrderScreen()
-        //FirstEntryScreen()
+        AppNavigator()
       }
     }
   }

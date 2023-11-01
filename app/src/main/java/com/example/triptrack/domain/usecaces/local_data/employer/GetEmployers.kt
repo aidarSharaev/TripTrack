@@ -4,12 +4,12 @@ import com.example.triptrack.data.local.dao.EmployerDao
 import com.example.triptrack.model.Employer
 import javax.inject.Inject
 
-class InsertEmployer @Inject constructor(
+class GetEmployers @Inject constructor(
   private val employerDao: EmployerDao
 ) {
 
-  suspend operator fun invoke(employer: Employer) {
-    employerDao.insertEmployer(employer = employer)
+  suspend operator fun invoke(): List<Employer> {
+    return employerDao.getAllEmployers()
   }
 
 }

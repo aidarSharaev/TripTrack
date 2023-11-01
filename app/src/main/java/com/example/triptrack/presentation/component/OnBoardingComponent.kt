@@ -1,4 +1,4 @@
-package com.example.triptrack.presentation.common
+package com.example.triptrack.presentation.component
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -22,10 +22,8 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.triptrack.presentation.onboarding.OnBoardingEvent
+import com.example.triptrack.presentation.onboarding.BottomButton
 import com.example.triptrack.presentation.onboarding.Page
-import com.example.triptrack.presentation.component.BottomButton
-import com.example.triptrack.presentation.component.Indicator
 
 @Composable
 fun TopComponent(
@@ -62,7 +60,6 @@ fun BottomComponent(
   pageSize: Int,
   pagerState: PagerState,
   buttonValue: List<String>,
-  event: (OnBoardingEvent) -> Unit
 ) {
   Row(
     modifier = Modifier
@@ -86,8 +83,6 @@ fun BottomComponent(
         BottomButton(
           buttonValue = buttonValue,
           pagerState = pagerState,
-          pageSize = pageSize,
-          event = event
         )
       }
     }

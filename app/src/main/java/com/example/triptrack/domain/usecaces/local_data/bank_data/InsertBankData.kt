@@ -9,7 +9,7 @@ class InsertBankData @Inject constructor(
 ) {
 
   suspend operator fun invoke(bankData: BankData) {
-    bankDataDao.insertBankData(bankData)
+    bankDataDao.insertBankData(bankData = bankData)
   }
 
 }

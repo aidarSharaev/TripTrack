@@ -108,4 +108,7 @@ dependencies {
     //pager
     implementation "com.google.accompanist:accompanist-systemuicontroller:0.31.4-beta"
 
+    //Ycharts graph
+    implementation "co.yml:ycharts:2.1.0"
+
 }

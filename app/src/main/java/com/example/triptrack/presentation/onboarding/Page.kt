@@ -25,4 +25,9 @@ val pagesList = listOf<Page>(
     text = "На главном экране вы можете внести поездки",
     image = R.drawable.onboarding3
   ),
+  Page(
+    title = "Вход",
+    text = "Введите имя и фамилию",
+    image = R.drawable.onboarding3
+  ),
 )

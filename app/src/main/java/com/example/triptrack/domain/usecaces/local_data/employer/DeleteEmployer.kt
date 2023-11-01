@@ -9,6 +9,7 @@ class DeleteEmployer @Inject constructor(
 ) {
 
   suspend operator fun invoke(employer: Employer) {
-    employerDao.deleteEmployer(employer)
+    employerDao.deleteEmployer(employer = employer)
   }
+
 }

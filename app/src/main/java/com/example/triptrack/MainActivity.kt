@@ -27,17 +27,14 @@ class MainActivity : ComponentActivity() {
     }
     setContent {
       TripTrackTheme {
-
         val isSystemInDarkMode = isSystemInDarkTheme()
         val systemController = rememberSystemUiController()
-
         SideEffect {
           systemController.setSystemBarsColor(
             color = Color.Transparent,
             darkIcons = !isSystemInDarkMode
           )
         }
-
         val startDestination = viewModel.startDestination
         NavGraph(startDestination = startDestination)
       }

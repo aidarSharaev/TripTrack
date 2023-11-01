@@ -6,8 +6,10 @@ sealed class Route(
 
   object AppStartNavigation : Route(route = "appStartNavigation")
   object OnBoardingScreen : Route(route = "onBoardingScreen")
+
   object HomeScreenNavigation : Route(route = "homeScreenNavigation")
   object HomeScreen : Route(route = "homeScreen")
+
   object StatScreenNavigation : Route(route = "statScreenNavigation")
   object StatScreen : Route(route = "statScreen")
   object ProfileScreenNavigation : Route(route = "profileScreenNavigation")
