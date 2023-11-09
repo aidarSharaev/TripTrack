@@ -27,64 +27,64 @@ import com.example.triptrack.presentation.onboarding.Page
 
 @Composable
 fun TopComponent(
-  page: Page
+    page: Page,
 ) {
-  Image(
-    modifier = Modifier
-      .fillMaxWidth()
-      .fillMaxHeight(0.6f),
-    painter = painterResource(id = page.image),
-    contentDescription = "page image",
-    contentScale = ContentScale.Crop,
-  )
-  Spacer(
-    modifier = Modifier.height(20.dp)
-  )
-  Text(
-    text = page.title,
-    fontFamily = FontFamily.SansSerif,
-    fontWeight = FontWeight.ExtraBold,
-    fontSize = 30.sp
-  )
-  Text(
-    text = page.text,
-    fontFamily = FontFamily.SansSerif,
-    fontWeight = FontWeight.Bold,
-    fontSize = 24.sp
-  )
+    Image(
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight(0.6f),
+        painter = painterResource(id = page.image),
+        contentDescription = "page image",
+        contentScale = ContentScale.Crop,
+    )
+    Spacer(
+        modifier = Modifier.height(20.dp),
+    )
+    Text(
+        text = page.title,
+        fontFamily = FontFamily.SansSerif,
+        fontWeight = FontWeight.ExtraBold,
+        fontSize = 30.sp,
+    )
+    Text(
+        text = page.text,
+        fontFamily = FontFamily.SansSerif,
+        fontWeight = FontWeight.Bold,
+        fontSize = 24.sp,
+    )
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun BottomComponent(
-  pageSize: Int,
-  pagerState: PagerState,
-  buttonValue: List<String>,
+    pageSize: Int,
+    pagerState: PagerState,
+    buttonValue: List<String>,
 ) {
-  Row(
-    modifier = Modifier
-      .fillMaxSize(),
-    verticalAlignment = Alignment.Bottom,
-    horizontalArrangement = Arrangement.SpaceBetween
-  ) {
-    Box(
-      modifier = Modifier
-        .padding(start = 15.dp, bottom = 15.dp),
-      contentAlignment = Alignment.BottomStart
+    Row(
+        modifier = Modifier
+            .fillMaxSize(),
+        verticalAlignment = Alignment.Bottom,
+        horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-      Indicator(pageSize = pageSize, selectedPage = pagerState.currentPage)
+        Box(
+            modifier = Modifier
+                .padding(start = 15.dp, bottom = 15.dp),
+            contentAlignment = Alignment.BottomStart,
+        ) {
+            Indicator(pageSize = pageSize, selectedPage = pagerState.currentPage)
+        }
+        Box(
+            contentAlignment = Alignment.BottomEnd,
+        ) {
+            Row(
+                modifier = Modifier.padding(bottom = 15.dp),
+            ) {
+                BottomButton(
+                    buttonValue = buttonValue,
+                    pagerState = pagerState,
+                )
+            }
+        }
     }
-    Box(
-      contentAlignment = Alignment.BottomEnd
-    ) {
-      Row(
-        modifier = Modifier.padding(bottom = 15.dp)
-      ) {
-        BottomButton(
-          buttonValue = buttonValue,
-          pagerState = pagerState,
-        )
-      }
-    }
-  }
 }

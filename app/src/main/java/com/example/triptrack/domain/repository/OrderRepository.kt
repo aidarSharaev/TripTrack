@@ -6,6 +6,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface OrderRepository {
 
-  fun loadAllOrdersPaged(): Flow<PagingData<Order>>
-
+    fun loadAllOrdersPaged(): Flow<PagingData<Order>>
 }

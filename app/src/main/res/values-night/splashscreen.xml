@@ -2,7 +2,7 @@
 <resources>
     <style name="App.Starting.Theme" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/teal_200</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/ktor</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/logo</item>
         <item name="postSplashScreenTheme">@style/Theme.TripTrack</item>
     </style>
 </resources>

@@ -10,16 +10,16 @@ import com.example.triptrack.remote.dto.OrdersPagingSource
 import kotlinx.coroutines.flow.Flow
 
 class OrderRepositoryImpl(
-  private val orderDao: OrderDao
-): OrderRepository {
-  override fun loadAllOrdersPaged(): Flow<PagingData<Order>> {
-    return Pager(
-      config = PagingConfig(pageSize = 20),
-      pagingSourceFactory = {
-        OrdersPagingSource(
-          orderDao = orderDao
-        )
-      }
-    ).flow
-  }
+    private val orderDao: OrderDao,
+) : OrderRepository {
+    override fun loadAllOrdersPaged(): Flow<PagingData<Order>> {
+        return Pager(
+            config = PagingConfig(pageSize = 20),
+            pagingSourceFactory = {
+                OrdersPagingSource(
+                    orderDao = orderDao,
+                )
+            },
+        ).flow
+    }
 }

@@ -11,9 +11,12 @@ import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.unit.sp
+import com.example.triptrack.ui.theme.fontItalic
 
 @Composable
 fun CustomTextField(
@@ -49,6 +52,7 @@ fun CustomTextField(
         field.value = it
       }
     },
+    textStyle = TextStyle(fontFamily = fontItalic, fontSize = 20.sp),
     label = { Text(text = text) },
     colors = OutlinedTextFieldDefaults.colors(
       focusedTextColor = textColor,

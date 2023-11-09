@@ -17,52 +17,50 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import com.example.triptrack.presentation.navgraph.Dimens.navBarPadding
 
 data class NavItemList(
-  val icon: ImageVector,
-  val title: String
+    val icon: ImageVector,
+    val title: String,
 )
 
 @Composable
 fun BottomBar(
-  navItemList: List<NavItemList>,
-  selectedItem: Int,
-  onItemClick: (Int) -> Unit
+    navItemList: List<NavItemList>,
+    selectedItem: Int,
+    onItemClick: (Int) -> Unit,
 ) {
-
-  NavigationBar(
-    modifier = Modifier.height(60.dp),
-    containerColor = MaterialTheme.colorScheme.primaryContainer
-  ) {
-    navItemList.forEachIndexed { index, item ->
-      NavigationBarItem(
-        selected = index == selectedItem,
-        onClick = { onItemClick(index) },
-        icon = {
-          Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Icon(
-              imageVector = item.icon,
-              contentDescription = null,
-              tint = MaterialTheme.colorScheme.secondary
+    NavigationBar(
+        modifier = Modifier.height(navBarPadding),
+        containerColor = MaterialTheme.colorScheme.primaryContainer,
+    ) {
+        navItemList.forEachIndexed { index, item ->
+            NavigationBarItem(
+                selected = index == selectedItem,
+                onClick = { onItemClick(index) },
+                icon = {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Icon(
+                            imageVector = item.icon,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.secondary,
+                        )
+                        Text(text = item.title)
+                    }
+                },
             )
-            Text(text = item.title)
-          }
         }
-      )
     }
-  }
 }
 
 @Composable
 @Preview(showBackground = true)
 @Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
 fun BottomBarPreview() {
-  val navItemList = listOf<NavItemList>(
-    NavItemList(Icons.Default.Home, "Главная"),
-    NavItemList(Icons.Default.Info, "Подробности"),
-    NavItemList(Icons.Default.AccountCircle, "Профиль")
-  )
-  BottomBar(navItemList = navItemList, 2, {})
+    val navItemList = listOf<NavItemList>(
+        NavItemList(Icons.Default.Home, "Главная"),
+        NavItemList(Icons.Default.Info, "Подробности"),
+        NavItemList(Icons.Default.AccountCircle, "Профиль"),
+    )
+    BottomBar(navItemList = navItemList, 2, {})
 }
-

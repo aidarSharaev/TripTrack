@@ -48,142 +48,157 @@ import com.example.triptrack.R
 
 @Composable
 fun AutoComplete(
-  values: List<String>, text: String
+    values: List<String>,
+    text: String,
 ) {
-
-  var category by remember {
-    mutableStateOf("")
-  }
-
-  val heightTextFields by remember {
-    mutableStateOf(40.dp)
-  }
-
-  var textFieldSize by remember {
-    mutableStateOf(Size.Zero)
-  }
-
-  var expanded by remember {
-    mutableStateOf(false)
-  }
-
-  val cardColor = if(isSystemInDarkTheme()) colorResource(id = R.color.auto_complete_light)
-  else colorResource(id = R.color.auto_complete_night)
-
-
-  Column(
-    modifier = Modifier
-      .padding(30.dp)
-      .fillMaxWidth()
-      .clickable(onClick = {
-        expanded = false
-      })
-
-  ) {
-
-    Text(
-      modifier = Modifier.padding(start = 3.dp),
-      text = text,
-      fontSize = 14.sp,
-      color = Color.Black,
-      fontWeight = FontWeight.Medium
-    )
-
-    Column(modifier = Modifier.fillMaxWidth()) {
-
-      Row(modifier = Modifier.fillMaxWidth()) {
-        TextField(modifier = Modifier
-          .fillMaxWidth()
-          .height(50.dp)
-          .border(
-            width = 1.dp, color = Color.Black, shape = RoundedCornerShape(20.dp)
-          )
-          .onGloballyPositioned { coordinates ->
-            textFieldSize = coordinates.size.toSize()
-          }, value = category, onValueChange = {
-          category = it
-          expanded = true
-        }, colors = OutlinedTextFieldDefaults.colors(
-          cursorColor = Color.Black,
-          focusedBorderColor = Color.Transparent,
-          unfocusedBorderColor = Color.Transparent
-          //disabledIndicatorColor = Color.Transparent
-        ), textStyle = TextStyle(
-          color = Color.Black, fontSize = 16.sp
-        ), keyboardOptions = KeyboardOptions(
-          keyboardType = KeyboardType.Text, imeAction = ImeAction.Done
-        ), singleLine = true, trailingIcon = {
-          IconButton(onClick = { expanded = !expanded }) {
-            Icon(
-              modifier = Modifier.size(24.dp),
-              imageVector = Icons.Rounded.KeyboardArrowDown,
-              contentDescription = "arrow",
-              tint = Color.Black
-            )
-          }
-        })
-      }
-
-      AnimatedVisibility(visible = expanded) {
-        Card(
-          modifier = Modifier
-            .padding(horizontal = 5.dp)
-            .width(textFieldSize.width.dp),
-          elevation = CardDefaults.cardElevation(15.dp),
-          shape = RoundedCornerShape(10.dp),
-          colors = CardDefaults.cardColors(cardColor)
-        ) {
-
-          LazyColumn(
-            modifier = Modifier
-              .heightIn(max = 100.dp)
-              .background(Color.Transparent),
-
-            ) {
-
-            if(category.isNotEmpty()) {
-              items(
-                values.filter {
-                  it.lowercase().contains(category.lowercase()) || it.lowercase()
-                    .contains("others")
-                }.sorted()
-              ) {
-                CategoryItems(title = it) { title ->
-                  category = title
-                  expanded = false
-                }
-              }
-            } else {
-              items(
-                values.sorted()
-              ) {
-                CategoryItems(title = it) { title ->
-                  category = title
-                  expanded = false
-                }
-              }
-            }
-          }
-        }
-      }
+    var category by remember {
+        mutableStateOf("")
     }
-  }
+
+    val heightTextFields by remember {
+        mutableStateOf(40.dp)
+    }
+
+    var textFieldSize by remember {
+        mutableStateOf(Size.Zero)
+    }
+
+    var expanded by remember {
+        mutableStateOf(false)
+    }
+
+    val cardColor = if (isSystemInDarkTheme()) {
+        colorResource(id = R.color.auto_complete_light)
+    } else {
+        colorResource(id = R.color.auto_complete_night)
+    }
+
+    Column(
+        modifier = Modifier
+            .padding(30.dp)
+            .fillMaxWidth()
+            .clickable(onClick = {
+                expanded = false
+            }),
+
+    ) {
+        Text(
+            modifier = Modifier.padding(start = 3.dp),
+            text = text,
+            fontSize = 14.sp,
+            color = Color.Black,
+            fontWeight = FontWeight.Medium,
+        )
+
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Row(modifier = Modifier.fillMaxWidth()) {
+                TextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp)
+                        .border(
+                            width = 1.dp,
+                            color = Color.Black,
+                            shape = RoundedCornerShape(20.dp),
+                        )
+                        .onGloballyPositioned { coordinates ->
+                            textFieldSize = coordinates.size.toSize()
+                        },
+                    value = category,
+                    onValueChange = {
+                        category = it
+                        expanded = true
+                    },
+                    colors = OutlinedTextFieldDefaults.colors(
+                        cursorColor = Color.Black,
+                        focusedBorderColor = Color.Transparent,
+                        unfocusedBorderColor = Color.Transparent,
+                        // disabledIndicatorColor = Color.Transparent
+                    ),
+                    textStyle = TextStyle(
+                        color = Color.Black,
+                        fontSize = 16.sp,
+                    ),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Done,
+                    ),
+                    singleLine = true,
+                    trailingIcon = {
+                        IconButton(onClick = { expanded = !expanded }) {
+                            Icon(
+                                modifier = Modifier.size(24.dp),
+                                imageVector = Icons.Rounded.KeyboardArrowDown,
+                                contentDescription = "arrow",
+                                tint = Color.Black,
+                            )
+                        }
+                    },
+                )
+            }
+
+            AnimatedVisibility(visible = expanded) {
+                Card(
+                    modifier = Modifier
+                        .padding(horizontal = 5.dp)
+                        .width(textFieldSize.width.dp),
+                    elevation = CardDefaults.cardElevation(15.dp),
+                    shape = RoundedCornerShape(10.dp),
+                    colors = CardDefaults.cardColors(cardColor),
+                ) {
+                    LazyColumn(
+                        modifier = Modifier
+                            .heightIn(max = 100.dp)
+                            .background(Color.Transparent),
+
+                    ) {
+                        if (category.isNotEmpty()) {
+                            items(
+                                values.filter {
+                                    it.lowercase().contains(category.lowercase()) || it.lowercase()
+                                        .contains("others")
+                                }.sorted(),
+                            ) {
+                                CategoryItems(title = it) { title ->
+                                    category = title
+                                    expanded = false
+                                }
+                            }
+                        } else {
+                            items(
+                                values.sorted(),
+                            ) {
+                                CategoryItems(title = it) { title ->
+                                    category = title
+                                    expanded = false
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 @Composable
 fun CategoryItems(
-  title: String, onSelect: (String) -> Unit
+    title: String,
+    onSelect: (String) -> Unit,
 ) {
-  Row(modifier = Modifier
-    .fillMaxWidth()
-    .clickable {
-      onSelect(title)
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                onSelect(title)
+            }
+            .padding(10.dp)
+            .background(Color.Transparent),
+    ) {
+        Text(
+            text = title,
+            fontSize = 16.sp,
+            fontStyle = FontStyle.Italic,
+        )
     }
-    .padding(10.dp)
-    .background(Color.Transparent)) {
-    Text(
-      text = title, fontSize = 16.sp, fontStyle = FontStyle.Italic
-    )
-  }
-
 }

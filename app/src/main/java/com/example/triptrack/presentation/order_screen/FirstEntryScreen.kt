@@ -36,108 +36,104 @@ import com.example.triptrack.presentation.onboarding.OnBoardingEvent
 
 @Composable
 fun FirstEntryScreen(
-  onEvent: (OnBoardingEvent) -> Unit
+    onEvent: (OnBoardingEvent) -> Unit,
 ) {
+    val focusManager = LocalFocusManager.current
 
-  val focusManager = LocalFocusManager.current
+    val pattern = remember { Regex("[а-яА-Я\\s]*") }
 
-  val pattern = remember { Regex("[а-яА-Я\\s]*") }
+    val painter =
+        if (isSystemInDarkTheme()) {
+            painterResource(id = R.drawable.gradient_black)
+        } else {
+            painterResource(id = R.drawable.gradient_blue)
+        }
 
-  val painter =
-    if(isSystemInDarkTheme())
-      painterResource(id = R.drawable.gradient_black)
-    else
-      painterResource(id = R.drawable.gradient_blue)
+    val textColor =
+        if (isSystemInDarkTheme()) {
+            colorResource(id = R.color.text_color)
+        } else {
+            colorResource(id = R.color.text_color_night)
+        }
 
-  val textColor =
-    if(isSystemInDarkTheme())
-      colorResource(id = R.color.text_color)
-    else
-      colorResource(id = R.color.text_color_night)
-
-  val nameValue = remember {
-    mutableStateOf(TextFieldValue(""))
-  }
-
-  val secondNameValue = remember {
-    mutableStateOf(TextFieldValue(""))
-  }
-
-  val valid by remember {
-    derivedStateOf {
-      nameValue.value.text.isNotEmpty() && secondNameValue.value.text.isNotEmpty()
+    val nameValue = remember {
+        mutableStateOf(TextFieldValue(""))
     }
-  }
 
+    val secondNameValue = remember {
+        mutableStateOf(TextFieldValue(""))
+    }
 
-  Column(
-    modifier = Modifier
-      .fillMaxSize()
-      .paint(
-        painter = painter,
-        contentScale = ContentScale.Crop
-      ),
-    verticalArrangement = Arrangement.Center,
-    horizontalAlignment = Alignment.CenterHorizontally
-  ) {
+    val valid by remember {
+        derivedStateOf {
+            nameValue.value.text.isNotEmpty() && secondNameValue.value.text.isNotEmpty()
+        }
+    }
 
-    CustomTextField(
-      field = nameValue,
-      textColor = textColor,
-      text = "Имя",
-      focusManager = focusManager,
-      pattern = pattern,
-      imeActions = ImeAction.Next,
-      onClickAction = true,
-      length = 15,
-      keyboardType = KeyboardType.Text
-    )
-
-    Spacer(modifier = Modifier.height(15.dp))
-
-    CustomTextField(
-      field = secondNameValue,
-      textColor = textColor,
-      text = "Фамилия",
-      focusManager = focusManager,
-      pattern = pattern,
-      length = 15,
-      keyboardType = KeyboardType.Text
-    )
-
-    TextButton(
-      onClick = {
-        if (valid) {
-          onEvent(OnBoardingEvent.SaveAppEntry)
-        } },
-      shape = RoundedCornerShape(20.dp),
-      modifier = Modifier
-        .padding(top = 50.dp)
-        .size(width = 96.dp, height = 48.dp),
-      elevation = ButtonDefaults.buttonElevation(
-        defaultElevation = 2.dp,
-        pressedElevation = 0.dp
-      ),
-      colors = ButtonDefaults.textButtonColors(
-        containerColor = colorResource(id = R.color.button_color)
-      )
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .paint(
+                painter = painter,
+                contentScale = ContentScale.Crop,
+            ),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-      Text(text = "Запустить", color = textColor)
+        CustomTextField(
+            field = nameValue,
+            textColor = textColor,
+            text = "Имя",
+            focusManager = focusManager,
+            pattern = pattern,
+            imeActions = ImeAction.Next,
+            onClickAction = true,
+            length = 15,
+            keyboardType = KeyboardType.Text,
+        )
+
+        Spacer(modifier = Modifier.height(15.dp))
+
+        CustomTextField(
+            field = secondNameValue,
+            textColor = textColor,
+            text = "Фамилия",
+            focusManager = focusManager,
+            pattern = pattern,
+            length = 15,
+            keyboardType = KeyboardType.Text,
+        )
+
+        TextButton(
+            onClick = {
+                if (valid) {
+                    onEvent(OnBoardingEvent.SaveAppEntry)
+                }
+            },
+            shape = RoundedCornerShape(20.dp),
+            modifier = Modifier
+                .padding(top = 50.dp)
+                .size(width = 96.dp, height = 48.dp),
+            elevation = ButtonDefaults.buttonElevation(
+                defaultElevation = 2.dp,
+                pressedElevation = 0.dp,
+            ),
+            colors = ButtonDefaults.textButtonColors(
+                containerColor = colorResource(id = R.color.button_color),
+            ),
+        ) {
+            Text(text = "Запустить", color = textColor)
+        }
     }
-  }
 }
-
-
-
-
 
 @Composable
 @Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
 @Preview(showBackground = true)
 fun FirstEntryScreenPreview() {
-  //FirstEntryScreen(onEvent)
+    FirstEntryScreen({ })
 }
 
-//todo length
+// todo length
 
-//todo тряска
+// todo тряска

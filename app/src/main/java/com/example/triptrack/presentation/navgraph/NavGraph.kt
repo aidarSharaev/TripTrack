@@ -9,33 +9,32 @@ import androidx.navigation.compose.rememberNavController
 import com.example.triptrack.presentation.onboarding.OnBoardingScreen
 import com.example.triptrack.presentation.onboarding.OnBoardingViewModel
 
-
 @Composable
 fun NavGraph(
-  startDestination: String
+    startDestination: String,
 ) {
-  val navController = rememberNavController()
-  NavHost(navController = navController, startDestination = startDestination) {
-    navigation(
-      route = Route.AppStartNavigation.route,
-      startDestination = Route.OnBoardingScreen.route
-    ) {
-      composable(route = Route.OnBoardingScreen.route) {
-        val viewModel: OnBoardingViewModel = hiltViewModel()
-        OnBoardingScreen(event = viewModel::onEvent)
-      }
+    val navController = rememberNavController()
+    NavHost(navController = navController, startDestination = startDestination) {
+        navigation(
+            route = Route.AppStartNavigation.route,
+            startDestination = Route.OnBoardingScreen.route,
+        ) {
+            composable(route = Route.OnBoardingScreen.route) {
+                val viewModel: OnBoardingViewModel = hiltViewModel()
+                OnBoardingScreen(event = viewModel::onEvent)
+            }
+        }
+        navigation(
+            route = Route.HomeScreenNavigation.route,
+            startDestination = Route.HomeScreen.route,
+        ) {
+            composable(
+                route = Route.HomeScreen.route,
+            ) {
+                HomeNavigator(startDestination = Route.HomeScreenNavigation.route)
+            }
+        }
     }
-    navigation(
-      route = Route.HomeScreenNavigation.route,
-      startDestination = Route.HomeScreen.route
-    ) {
-      composable(
-        route = Route.HomeScreen.route
-      ) {
-        AppNavigator()
-      }
-    }
-  }
 }
 
 // (/app/onboarding)

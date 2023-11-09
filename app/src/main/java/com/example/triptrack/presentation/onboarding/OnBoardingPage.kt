@@ -21,64 +21,64 @@ import androidx.compose.ui.unit.sp
 import com.example.triptrack.presentation.component.TopComponent
 import kotlinx.coroutines.launch
 
-
 @Composable
 fun OnBoardingPage(
-  modifier: Modifier = Modifier,
-  page: Page
+    modifier: Modifier = Modifier,
+    page: Page,
 ) {
-  Column(
-    modifier = Modifier.fillMaxSize(),
-  ) {
-    TopComponent(page)
-  }
+    Column(
+        modifier = Modifier.fillMaxSize(),
+    ) {
+        TopComponent(page)
+    }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun BottomButton(
-  buttonValue: List<String>,
-  pagerState: PagerState,
+    buttonValue: List<String>,
+    pagerState: PagerState,
 ) {
-  val scope = rememberCoroutineScope()
-  if(buttonValue[0].isNotEmpty()) {
-    Button(
-      onClick = {
-        scope.launch {
-          pagerState.animateScrollToPage(page = pagerState.currentPage - 1)
+    val scope = rememberCoroutineScope()
+    if (buttonValue[0].isNotEmpty()) {
+        Button(
+            onClick = {
+                scope.launch {
+                    pagerState.animateScrollToPage(page = pagerState.currentPage - 1)
+                }
+            },
+            shape = MaterialTheme.shapes.medium,
+        ) {
+            Text(
+                text = buttonValue[0],
+                fontSize = 12.sp,
+            )
         }
-      },
-      shape = MaterialTheme.shapes.medium
-    ) {
-      Text(
-        text = buttonValue[0], fontSize = 12.sp
-      )
     }
-  }
-  Spacer(modifier = Modifier.width(10.dp))
-  if (buttonValue[1].isNotEmpty()) {
-    Button(
-      onClick = {
-        scope.launch {
-          pagerState.animateScrollToPage(page = pagerState.currentPage + 1)
+    Spacer(modifier = Modifier.width(10.dp))
+    if (buttonValue[1].isNotEmpty()) {
+        Button(
+            onClick = {
+                scope.launch {
+                    pagerState.animateScrollToPage(page = pagerState.currentPage + 1)
+                }
+            },
+            modifier = Modifier.padding(end = 15.dp),
+            shape = RoundedCornerShape(size = 5.dp),
+        ) {
+            Text(
+                text = buttonValue[1],
+                fontSize = 12.sp,
+            )
         }
-      },
-      modifier = Modifier.padding(end = 15.dp),
-      shape = RoundedCornerShape(size = 5.dp),
-    ) {
-      Text(
-        text = buttonValue[1], fontSize = 12.sp
-      )
     }
-  }
 }
-
 
 @Preview(showBackground = true)
 @Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun PagePreview() {
-  OnBoardingPage(page = pagesList[3])
+    OnBoardingPage(page = pagesList[3])
 }
 
-//navigationBarsPadding(),
+// navigationBarsPadding(),

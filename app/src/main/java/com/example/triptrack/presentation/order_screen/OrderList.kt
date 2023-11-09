@@ -25,7 +25,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -38,8 +37,6 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -49,6 +46,8 @@ import androidx.paging.compose.LazyPagingItems
 import com.example.triptrack.R
 import com.example.triptrack.model.Order
 import com.example.triptrack.ui.theme.TripTrackTheme
+import com.example.triptrack.ui.theme.fontBold
+import com.example.triptrack.ui.theme.fontItalic
 
 @Composable
 fun OrderList(
@@ -73,25 +72,25 @@ fun OrderList(
 @Preview(showBackground = true)
 @Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
 fun OrderCardPreview() {
-//  OrderCard(
-//    Order(
-//      id = 123,
-//      route = "Челны",
-//      payment = true,
-//      tax = true,
-//      date = "23-01-2003",
-//      income = 15000,
-//      wastes = 3000,
-//      profit = -12000
-//    )
-//  )
-  OrderCardShimmerEffect()
+  OrderCard(
+    Order(
+      id = 123,
+      route = "Челны",
+      payment = true,
+      tax = true,
+      date = "23-01-2003",
+      income = 15000,
+      wastes = 3000,
+      profit = -12000
+    )
+  )
+  //OrderCardShimmerEffect()
 }
 
 
 val CardHeight = 128.dp
-val textSize = 16.sp
-val textSize2 = 18.sp
+val textSize = 18.sp
+val textSize2 = 17.sp
 
 
 @Composable
@@ -106,19 +105,17 @@ fun OrderCard(order: Order) {
   val textWhere = buildAnnotatedString {
     withStyle(
       style = SpanStyle(
-        color = Color.Green,
-        fontWeight = FontWeight.ExtraBold,
-        fontFamily = FontFamily.Monospace,
-        fontSize = textSize
-      ),
+        color = textColor,
+        fontSize = textSize,
+        fontFamily = fontBold
+      )
     ) {
-      append("Kуда: ")
+      append("Маршрут: ")
     }
     withStyle(
       style = SpanStyle(
         color = textColor,
-        fontWeight = FontWeight.ExtraBold,
-        fontFamily = FontFamily.Serif,
+        fontFamily = fontItalic,
         fontSize = textSize
       )
     ) {
@@ -129,23 +126,21 @@ fun OrderCard(order: Order) {
   val textEmployer = buildAnnotatedString {
     withStyle(
       style = SpanStyle(
-        color = Color.Green,
-        fontWeight = FontWeight.ExtraBold,
-        fontFamily = FontFamily.Monospace,
-        fontSize = textSize
-      ),
+        fontFamily = fontBold,
+        color = textColor,
+        fontSize = textSize,
+      )
     ) {
       append("От кого: ")
     }
     withStyle(
       style = SpanStyle(
         color = textColor,
-        fontWeight = FontWeight.ExtraBold,
-        fontFamily = FontFamily.Serif,
+        fontFamily = fontItalic,
         fontSize = textSize
       )
     ) {
-      append("\t ${order.employerDescription?: "Хер знает"}")
+      append("\t ${order.employerDescription ?: "Хер знает"}")
     }
   }
 
@@ -153,22 +148,20 @@ fun OrderCard(order: Order) {
     withStyle(
       style = SpanStyle(
         color = moneyColor,
-        fontWeight = FontWeight.ExtraBold,
-        fontFamily = FontFamily.Serif,
+        fontFamily = fontBold,
         fontSize = textSize2
-      ),
+        )
     ) {
       append("${order.profit} \t")
     }
     withStyle(
       style = SpanStyle(
         color = textColor,
-        fontWeight = FontWeight.ExtraBold,
-        fontFamily = FontFamily.Serif,
+        fontFamily = fontBold,
         fontSize = textSize2
       )
     ) {
-      append("${order.date} \t")
+      append("${order.date} \t Налог")
     }
   }
 
@@ -191,9 +184,9 @@ fun OrderCard(order: Order) {
           .width(50.dp)
       ) {
         Text(
-          text = order.id.toString(),
-          fontStyle = MaterialTheme.typography.bodyMedium.fontStyle,
-          fontSize = 20.sp,
+          text = "${order.id}",
+          fontFamily = fontBold,
+          fontSize = textSize,
           color = textColor
         )
       }
@@ -204,28 +197,16 @@ fun OrderCard(order: Order) {
         horizontalAlignment = Alignment.Start
       ) {
         Row {
-          Text(
-            text = textWhere,
-          )
+          Text(text = textWhere)
         }
         Spacer(modifier = Modifier.height(5.dp))
         Row {
-          Text(
-            text = textEmployer,
-          )
+          Text(text = textEmployer)
         }
         Spacer(modifier = Modifier.height(15.dp))
-        Row {
-          Text(
-            text = textInfo
-          )
-          Text(
-            text = "Налог  ",
-            color = textColor,
-            fontWeight = FontWeight.ExtraBold,
-            fontFamily = FontFamily.Serif,
-            fontSize = textSize2
-          )
+        Row(verticalAlignment = Alignment.CenterVertically) {
+          Text(text = textInfo)
+          Spacer(modifier = Modifier.width(2.dp))
           Icon(
             painter = painterResource(id = R.drawable.done), contentDescription = null,
             tint = Color.Green
@@ -294,7 +275,11 @@ fun OrderCardShimmerEffect(
               .fillMaxHeight()
               .width(50.dp)
           ) {
-            Box(Modifier.loadShimmerEffect().size(50.dp)) {} // yes
+            Box(
+              Modifier
+                .loadShimmerEffect()
+                .size(50.dp)
+            ) {} // yes
           }
           Column(
             modifier = Modifier
@@ -303,13 +288,28 @@ fun OrderCardShimmerEffect(
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.SpaceAround
           ) {
-            Row(Modifier.fillMaxWidth().fillMaxHeight(0.2f).loadShimmerEffect()) {
+            Row(
+              Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(0.2f)
+                .loadShimmerEffect()
+            ) {
             }
             Spacer(modifier = Modifier.fillMaxHeight(0.05f))
-            Row(Modifier.fillMaxWidth().fillMaxHeight(0.3f).loadShimmerEffect()) {
+            Row(
+              Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(0.3f)
+                .loadShimmerEffect()
+            ) {
             }
             Spacer(modifier = Modifier.fillMaxHeight(0.05f))
-            Row(Modifier.fillMaxWidth().fillMaxHeight(0.4f).loadShimmerEffect()) {
+            Row(
+              Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(0.4f)
+                .loadShimmerEffect()
+            ) {
             }
           }
         }

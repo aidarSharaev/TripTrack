@@ -10,20 +10,19 @@ import com.example.triptrack.utils.Constants.ORDER_TABLE
 
 @Dao
 interface OrderDao {
-//todo desc
-  @Query(value = "select * from $ORDER_TABLE order by id asc")
-  fun loadAllOrdersPaged(): List<Order>
+// todo desc
+    @Query(value = "select * from $ORDER_TABLE order by id asc")
+    fun loadAllOrdersPaged(): List<Order>
 
-  @Query(value = "select * from $ORDER_TABLE where id = :id")
-  suspend fun getOrderById(id: Int): Order
+    @Query(value = "select * from $ORDER_TABLE where id = :id")
+    suspend fun getOrderById(id: Int): Order
 
-  @Query(value = "select count(*) from $ORDER_TABLE")
-  suspend fun getOrderCount(): Int
+    @Query(value = "select count(*) from $ORDER_TABLE")
+    suspend fun getOrderCount(): Int
 
-  @Insert(onConflict = OnConflictStrategy.REPLACE)
-  suspend fun insertOrder(order: Order)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertOrder(order: Order)
 
-  @Delete
-  suspend fun deleteOrderById(order: Order)
-
+    @Delete
+    suspend fun deleteOrderById(order: Order)
 }

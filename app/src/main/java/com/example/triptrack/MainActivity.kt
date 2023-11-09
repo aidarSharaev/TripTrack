@@ -16,30 +16,30 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-  val viewModel by viewModels<MainViewModel>()
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    WindowCompat.setDecorFitsSystemWindows(window, false)
-    installSplashScreen().apply {
-      setKeepOnScreenCondition {
-        viewModel.splashCondition
-      }
-    }
-    setContent {
-      TripTrackTheme {
-        val isSystemInDarkMode = isSystemInDarkTheme()
-        val systemController = rememberSystemUiController()
-        SideEffect {
-          systemController.setSystemBarsColor(
-            color = Color.Transparent,
-            darkIcons = !isSystemInDarkMode
-          )
+    val viewModel by viewModels<MainViewModel>()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        installSplashScreen().apply {
+            setKeepOnScreenCondition {
+                viewModel.splashCondition
+            }
         }
-        val startDestination = viewModel.startDestination
-        NavGraph(startDestination = startDestination)
-      }
+        setContent {
+            TripTrackTheme {
+                val isSystemInDarkMode = isSystemInDarkTheme()
+                val systemController = rememberSystemUiController()
+                SideEffect {
+                    systemController.setSystemBarsColor(
+                        color = Color.Transparent,
+                        darkIcons = !isSystemInDarkMode,
+                    )
+                }
+                val startDestination = viewModel.startDestination
+                NavGraph(startDestination = startDestination)
+            }
+        }
     }
-  }
 }
 
-//viewModel::onEvent
+// viewModel::onEvent

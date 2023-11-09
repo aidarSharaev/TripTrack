@@ -29,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.triptrack.ui.theme.fontRegular
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -71,7 +72,8 @@ fun DateSelection(context: Context) {
               .height(20.dp),
             text = "Дата заказа",
             fontSize = MaterialTheme.typography.labelSmall.fontSize,
-            color = Color.LightGray
+            color = Color.LightGray,
+            fontFamily = fontRegular
           )
         }
 
