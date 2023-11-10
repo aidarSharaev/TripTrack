@@ -17,9 +17,10 @@ class HomeScreenViewModel @Inject constructor(
     val state: State<HomeState> = _state
 
     init {
-        downloadFacts()
+        downloadFacts() // TODO("facts")
     }
 
+    // TODO("fun facts")
     private fun downloadFacts() {
         viewModelScope.launch {
             _state.value = _state.value.copy(facts = orderUseCases.orderCount())

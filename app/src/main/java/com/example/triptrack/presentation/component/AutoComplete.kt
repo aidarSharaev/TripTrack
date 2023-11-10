@@ -48,12 +48,10 @@ import com.example.triptrack.R
 
 @Composable
 fun AutoComplete(
-    values: List<String>,
+    selectedEmployer: String,
+    employers: Set<String>,
     text: String,
 ) {
-    var category by remember {
-        mutableStateOf("")
-    }
 
     val heightTextFields by remember {
         mutableStateOf(40.dp)
@@ -104,9 +102,9 @@ fun AutoComplete(
                         .onGloballyPositioned { coordinates ->
                             textFieldSize = coordinates.size.toSize()
                         },
-                    value = category,
+                    value = selectedEmployer,
                     onValueChange = {
-                        category = it
+                        selectedEmployer = it
                         expanded = true
                     },
                     colors = OutlinedTextFieldDefaults.colors(
@@ -152,24 +150,23 @@ fun AutoComplete(
                             .background(Color.Transparent),
 
                     ) {
-                        if (category.isNotEmpty()) {
+                        if (selectedEmployer.isNotEmpty()) {
                             items(
-                                values.filter {
-                                    it.lowercase().contains(category.lowercase()) || it.lowercase()
-                                        .contains("others")
+                                employers.filter {
+                                    it.lowercase().contains(selectedEmployer.lowercase())
                                 }.sorted(),
                             ) {
                                 CategoryItems(title = it) { title ->
-                                    category = title
+                                    selectedEmployer = title
                                     expanded = false
                                 }
                             }
                         } else {
                             items(
-                                values.sorted(),
+                                employers.sorted(),
                             ) {
                                 CategoryItems(title = it) { title ->
-                                    category = title
+                                    selectedEmployer = title
                                     expanded = false
                                 }
                             }

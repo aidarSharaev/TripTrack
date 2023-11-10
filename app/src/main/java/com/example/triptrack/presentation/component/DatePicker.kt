@@ -37,70 +37,77 @@ import java.util.Date
 @SuppressLint("SimpleDateFormat")
 @Composable
 fun DateSelection(context: Context) {
-
-  val calendar = Calendar.getInstance()
-  val year: Int = calendar.get(Calendar.YEAR)
-  val month: Int = calendar.get(Calendar.MONTH)
-  val day: Int = calendar.get(Calendar.DAY_OF_MONTH)
-  calendar.time = Date()
-  var date by remember {
-    mutableStateOf("")
-  }
-  val datePickerDialog = DatePickerDialog(
-    context, { _: DatePicker, _year: Int, _month: Int, _day: Int ->
-      date = "$_day/${_month + 1}/$_year"
-    }, year, month, day
-  )
-
-  val sdf = SimpleDateFormat("dd/M/yyyy")
-  var currentDate by remember { mutableStateOf(sdf.format(Date())) }
-
-  Column(
-    verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally
-  ) {
-    Box(
-      modifier = Modifier
-        .fillMaxWidth()
-        .height(60.dp)
-        .background(color = Color.White)
-    ) {
-      Column {
-        Row(verticalAlignment = Alignment.Bottom) {
-          Text(
-            modifier = Modifier
-              .padding(start = 30.dp)
-              .height(20.dp),
-            text = "Дата заказа",
-            fontSize = MaterialTheme.typography.labelSmall.fontSize,
-            color = Color.LightGray,
-            fontFamily = fontRegular
-          )
-        }
-
-        Row(
-          modifier = Modifier
-            .fillMaxSize()
-            .height(20.dp)
-            .bottomBorder(
-              1.dp, Color.Black
-            ), horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-          Text(
-            text = currentDate, modifier = Modifier
-              .padding(start = 30.dp, top = 10.dp)
-              .clickable {
-
-              }, style = MaterialTheme.typography.bodyMedium
-          )
-          IconButton(onClick = { /*TODO*/ }, modifier = Modifier.padding(end = 30.dp)) {
-            Icon(
-              imageVector = Icons.Default.DateRange,
-              contentDescription = null,
-              tint = Color.Black
-            )
-          }
-        }
-      }
+    val calendar = Calendar.getInstance()
+    val year: Int = calendar.get(Calendar.YEAR)
+    val month: Int = calendar.get(Calendar.MONTH)
+    val day: Int = calendar.get(Calendar.DAY_OF_MONTH)
+    calendar.time = Date()
+    var date by remember {
+        mutableStateOf("")
     }
-  }
+    val datePickerDialog = DatePickerDialog(
+        context,
+        { _: DatePicker, _year: Int, _month: Int, _day: Int ->
+            date = "$_day/${_month + 1}/$_year"
+        },
+        year,
+        month,
+        day,
+    )
+
+    val sdf = SimpleDateFormat("dd/M/yyyy")
+    var currentDate by remember { mutableStateOf(sdf.format(Date())) }
+
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(60.dp)
+                .background(color = Color.White),
+        ) {
+            Column {
+                Row(verticalAlignment = Alignment.Bottom) {
+                    Text(
+                        modifier = Modifier
+                            .padding(start = 30.dp)
+                            .height(20.dp),
+                        text = "Дата заказа",
+                        fontSize = MaterialTheme.typography.labelSmall.fontSize,
+                        color = Color.LightGray,
+                        fontFamily = fontRegular,
+                    )
+                }
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .height(20.dp)
+                        .bottomBorder(
+                            1.dp,
+                            Color.Black,
+                        ),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    Text(
+                        text = currentDate,
+                        modifier = Modifier
+                            .padding(start = 30.dp, top = 10.dp)
+                            .clickable {
+                            },
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                    IconButton(onClick = { datePickerDialog.show() }, modifier = Modifier.padding(end = 30.dp)) {
+                        Icon(
+                            imageVector = Icons.Default.DateRange,
+                            contentDescription = null,
+                            tint = Color.Black,
+                        )
+                    }
+                }
+            }
+        }
+    }
 }

@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">TripTrack</string>
+    <string name="complete">Завершить</string>
+    <string name="total">Итого</string>
+    <string name="tax">Налог</string>
+    <string name="payment">Оплата</string>
+    <string name="new_order">Новый заказ</string>
+    <string name="employer">Заказчик</string>
+    <string name="nil">0</string>
 </resources>

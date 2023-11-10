@@ -1,9 +1,8 @@
-package com.example.triptrack.presentation.order_screen
+package com.example.triptrack.screen.new_order_screen
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -22,6 +22,8 @@ import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -31,6 +33,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -42,32 +45,44 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.triptrack.R
 import com.example.triptrack.presentation.component.AutoComplete
 import com.example.triptrack.presentation.component.CheckboxTooltip
 import com.example.triptrack.presentation.component.DateSelection
+import com.example.triptrack.utils.Constants.MONEY_VALUES_DOWN
+import com.example.triptrack.utils.Constants.MONEY_VALUES_UP
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NewOrderScreen() {
+fun NewOrderScreen(
+    viewModel: NewOrderViewModel,
+    navigateUp: () -> Unit,
+    saveNewOrder: () -> Unit,
+) {
+    val uiState = viewModel.uiState.collectAsState()
+
     val context = LocalContext.current
 
     val checkedState = remember { mutableStateOf(true) }
 
-    val painter = if (isSystemInDarkTheme()) {
-        painterResource(id = R.drawable.gradient_black)
-    } else {
-        painterResource(id = R.drawable.gradient_blue)
-    }
-
-    val textColor = if (isSystemInDarkTheme()) {
-        colorResource(id = R.color.text_color)
-    } else {
-        colorResource(id = R.color.text_color_night)
-    }
+//    val painter = if (isSystemInDarkTheme()) {
+//        painterResource(id = R.drawable.gradient_black)
+//    } else {
+//        painterResource(id = R.drawable.gradient_blue)
+//    }
+//
+//    val textColor = if (isSystemInDarkTheme()) {
+//        colorResource(id = R.color.text_color)
+//    } else {
+//        colorResource(id = R.color.text_color_night)
+//    }
 
     val routeValue = remember {
         mutableStateOf(TextFieldValue(""))
@@ -76,39 +91,61 @@ fun NewOrderScreen() {
     val secondNameValue = remember {
         mutableStateOf(TextFieldValue(""))
     }
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
         topBar = {
-            TopAppBar(title = {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center,
-                ) { Text("Новый заказ") }
-            }, navigationIcon = {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                    contentDescription = null,
-                    modifier = Modifier.size(30.dp),
-                )
-            })
+            TopAppBar(
+                title = {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center,
+                    ) {
+                        Text(text = stringResource(id = R.string.new_order))
+                    }
+                },
+                navigationIcon = {
+                    IconButton(
+                        modifier = Modifier.size(30.dp),
+                        onClick = { navigateUp() },
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                            contentDescription = null,
+                        )
+                    }
+                },
+            )
         },
-    ) {
+    ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(it)
+                .padding(paddingValues)
                 .paint(
-                    painter = painter,
+                    painter = painterResource(id = R.drawable.gradient_blue), // TODO painter
                     contentScale = ContentScale.Crop,
                 ),
             verticalArrangement = Arrangement.Top,
         ) {
-            DateSelection(context)
+            DateSelection(context = context)
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            NewOrderCard(checkedState)
+            NewOrderCard(
+                selectedEmployer = uiState.value.selectedEmployer,
+                employers = uiState.value.employerList,
+                checked = checkedState,
+                profit = viewModel.profitValue,
+                cost = viewModel.costValue,
+                profitUpdate = {
+                    viewModel.profitUpdate(profitValue = it)
+                },
+                costUpdate = {
+                    viewModel.costUpdate(costValue = it)
+                },
+            )
 
             Row(
                 modifier = Modifier
@@ -119,10 +156,13 @@ fun NewOrderScreen() {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start,
             ) {
-                Text(modifier = Modifier.padding(start = 20.dp), text = "Итого: ${1000 - 7}")
+                Text(
+                    modifier = Modifier.padding(start = 20.dp),
+                    text = "${stringResource(id = R.string.total)}: ${uiState.value.total}",
+                )
             }
             TextButton(
-                onClick = { /*TODO*/ },
+                onClick = { saveNewOrder },
 
                 modifier = Modifier
                     .padding(top = 20.dp)
@@ -140,7 +180,10 @@ fun NewOrderScreen() {
                     containerColor = colorResource(id = R.color.button_color),
                 ),
             ) {
-                Text(text = "Завершить", color = textColor)
+                Text(
+                    text = stringResource(R.string.complete),
+                    color = Color.Black,
+                ) // TODO textcolor
             }
         }
     }
@@ -148,13 +191,16 @@ fun NewOrderScreen() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NewOrderCard(checked: MutableState<Boolean>) {
-    val moneyValuesUp = listOf("+3000", "+1000", "+500")
-    val moneyValuesDown = listOf("-2000", "-1000", "-500")
+fun NewOrderCard(
+    selectedEmployer: String,
+    employers: MutableSet<String>,
+    checked: MutableState<Boolean>,
+    profit: String,
+    cost: String,
+    profitUpdate: (String) -> Unit,
+    costUpdate: (String) -> Unit,
+) {
     val tooltipState = rememberTooltipState(isPersistent = true)
-    val categories = listOf(
-        "Food", "Beverages", "Sports", "Learning", "Travel", "Rent", "Bills", "Fees", "Others",
-    )
     Box(
         modifier = Modifier
             .height(470.dp)
@@ -170,10 +216,22 @@ fun NewOrderCard(checked: MutableState<Boolean>) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceEvenly,
         ) {
-            CheckboxTooltip(tooltipState = tooltipState, checked = checked, text = "Налог")
-            CheckboxTooltip(tooltipState = tooltipState, checked = checked, text = "Оплата")
+            CheckboxTooltip(
+                tooltipState = tooltipState,
+                checked = checked,
+                text = stringResource(id = R.string.tax),
+            )
+            CheckboxTooltip(
+                tooltipState = tooltipState,
+                checked = checked,
+                text = stringResource(id = R.string.payment),
+            )
         }
-        AutoComplete(categories, "Заказчик")
+        AutoComplete(
+            selectedEmployer = selectedEmployer,
+            employers = employers,
+            text = stringResource(id = R.string.employer),
+        )
 
         Column(
             modifier = Modifier
@@ -185,8 +243,18 @@ fun NewOrderCard(checked: MutableState<Boolean>) {
                 shadowElevation = 5.dp,
             ) {
                 OutlinedTextField(
-                    value = "1",
-                    onValueChange = {},
+                    value = profit,
+                    onValueChange = profitUpdate,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Done,
+                    ),
+                    placeholder = {
+                        Text(
+                            text = stringResource(id = R.string.nil),
+                            fontStyle = MaterialTheme.typography.bodySmall.fontStyle,
+                        )
+                    },
                 )
             }
             Spacer(modifier = Modifier.height(20.dp))
@@ -196,14 +264,28 @@ fun NewOrderCard(checked: MutableState<Boolean>) {
             ) {
                 repeat(3) {
                     Surface(shadowElevation = 5.dp) {
-                        ButtonWithMoneyValue(moneyValuesUp[it])
+                        ButtonWithMoneyValue(
+                            field = profit,
+                            text = MONEY_VALUES_UP[it],
+                            onClick = profitUpdate,
+                        )
                     }
                 }
             }
             Spacer(modifier = Modifier.height(15.dp))
             OutlinedTextField(
-                value = "1",
-                onValueChange = {},
+                value = cost,
+                onValueChange = costUpdate,
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Done,
+                ),
+                placeholder = {
+                    Text(
+                        text = stringResource(id = R.string.nil),
+                        fontStyle = MaterialTheme.typography.bodySmall.fontStyle,
+                    )
+                },
             )
             Spacer(modifier = Modifier.height(20.dp))
             Row(
@@ -212,7 +294,11 @@ fun NewOrderCard(checked: MutableState<Boolean>) {
             ) {
                 repeat(3) {
                     Surface(shadowElevation = 5.dp) {
-                        ButtonWithMoneyValue(moneyValuesDown[it])
+                        ButtonWithMoneyValue(
+                            field = cost,
+                            text = MONEY_VALUES_DOWN[it],
+                            onClick = costUpdate,
+                        )
                     }
                 }
             }
@@ -223,15 +309,22 @@ fun NewOrderCard(checked: MutableState<Boolean>) {
 @Composable
 @Preview(showBackground = true)
 fun NewOrderScreenPreview() {
-    val context = LocalContext.current
-    NewOrderScreen()
+    val newOrderViewModel: NewOrderViewModel = hiltViewModel()
+    NewOrderScreen(newOrderViewModel, { }, {})
 }
 
 @Composable
-fun ButtonWithMoneyValue(text: String) {
+fun ButtonWithMoneyValue(
+    field: String,
+    text: String,
+    onClick: (String) -> Unit,
+) {
     Button(
         shape = RoundedCornerShape(5.dp),
-        onClick = { /*TODO*/ },
+        onClick = {
+            val arg = (field.toInt() + (text.substring(1)).toInt()).toString()
+            onClick(arg)
+        },
         modifier = Modifier
             .border(
                 width = 1.dp,
@@ -251,3 +344,5 @@ fun ButtonWithMoneyValue(text: String) {
         Text(text = text)
     }
 }
+
+// todo onClick button

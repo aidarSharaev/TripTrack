@@ -29,4 +29,7 @@ object Constants {
         "Ноябрь",
         "Декабрь",
     )
+
+    val MONEY_VALUES_UP = listOf("+3000", "+1000", "+500")
+    val MONEY_VALUES_DOWN = listOf("-2000", "-1000", "-500")
 }

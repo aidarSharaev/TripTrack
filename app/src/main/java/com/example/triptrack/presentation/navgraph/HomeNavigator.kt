@@ -22,9 +22,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import com.example.triptrack.presentation.order_screen.NewOrderScreen
 import com.example.triptrack.screen.home.HomeScreen
 import com.example.triptrack.screen.home.HomeScreenViewModel
+import com.example.triptrack.screen.new_order_screen.NewOrderScreen
+import com.example.triptrack.screen.new_order_screen.NewOrderViewModel
 
 @Composable
 fun HomeNavigator(
@@ -93,7 +94,12 @@ fun HomeNavigator(
                     )
                 }
                 composable(route = Route.NewOrderScreen.route) {
-                    NewOrderScreen()
+                    val newOrderViewModel: NewOrderViewModel = hiltViewModel()
+                    NewOrderScreen(
+                        viewModel = newOrderViewModel,
+                        navigateUp = { navController.navigateUp() },
+                        saveNewOrder = {},
+                    )
                 }
             }
             navigation(
