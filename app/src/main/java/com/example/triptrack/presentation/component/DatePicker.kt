@@ -21,42 +21,45 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.triptrack.R
+import com.example.triptrack.presentation.component.CALENDAR.calendar
+import com.example.triptrack.presentation.component.CALENDAR.day
+import com.example.triptrack.presentation.component.CALENDAR.month
+import com.example.triptrack.presentation.component.CALENDAR.year
 import com.example.triptrack.ui.theme.fontRegular
-import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 
-@SuppressLint("SimpleDateFormat")
-@Composable
-fun DateSelection(context: Context) {
+object CALENDAR {
     val calendar = Calendar.getInstance()
     val year: Int = calendar.get(Calendar.YEAR)
     val month: Int = calendar.get(Calendar.MONTH)
     val day: Int = calendar.get(Calendar.DAY_OF_MONTH)
+}
+
+@SuppressLint("SimpleDateFormat")
+@Composable
+fun DateSelection(
+    context: Context,
+    date: String,
+    orderDateChange: (String) -> Unit
+) {
     calendar.time = Date()
-    var date by remember {
-        mutableStateOf("")
-    }
+
     val datePickerDialog = DatePickerDialog(
         context,
         { _: DatePicker, _year: Int, _month: Int, _day: Int ->
-            date = "$_day/${_month + 1}/$_year"
+            orderDateChange("$_day/${_month + 1}/$_year")
         },
         year,
         month,
         day,
     )
-
-    val sdf = SimpleDateFormat("dd/M/yyyy")
-    var currentDate by remember { mutableStateOf(sdf.format(Date())) }
 
     Column(
         verticalArrangement = Arrangement.Center,
@@ -74,7 +77,7 @@ fun DateSelection(context: Context) {
                         modifier = Modifier
                             .padding(start = 30.dp)
                             .height(20.dp),
-                        text = "Дата заказа",
+                        text = stringResource(R.string.order_date),
                         fontSize = MaterialTheme.typography.labelSmall.fontSize,
                         color = Color.LightGray,
                         fontFamily = fontRegular,
@@ -92,14 +95,17 @@ fun DateSelection(context: Context) {
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Text(
-                        text = currentDate,
+                        text = date,
                         modifier = Modifier
                             .padding(start = 30.dp, top = 10.dp)
                             .clickable {
                             },
                         style = MaterialTheme.typography.bodyMedium,
                     )
-                    IconButton(onClick = { datePickerDialog.show() }, modifier = Modifier.padding(end = 30.dp)) {
+                    IconButton(
+                        onClick = { datePickerDialog.show() },
+                        modifier = Modifier.padding(end = 30.dp),
+                    ) {
                         Icon(
                             imageVector = Icons.Default.DateRange,
                             contentDescription = null,

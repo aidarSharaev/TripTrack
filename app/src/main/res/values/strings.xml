@@ -7,4 +7,7 @@
     <string name="new_order">Новый заказ</string>
     <string name="employer">Заказчик</string>
     <string name="nil">0</string>
+    <string name="order_date">Дата заказа</string>
+    <string name="tax_payment">Была ли оплата налога</string>
+    <string name="profit_calc_and_for_new_version">Для подсчета прибыли и дальнейших обновлений</string>
 </resources>

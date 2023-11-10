@@ -27,13 +27,10 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
@@ -43,28 +40,19 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.unit.toSize
 import com.example.triptrack.R
 
 @Composable
 fun AutoComplete(
     selectedEmployer: String,
+    selectedEmployerUpdate: (String) -> Unit,
+    expanded: Boolean,
+    expandedUpdate: (Boolean) -> Unit,
     employers: Set<String>,
     text: String,
+    textFieldSize: Size,
+    textFieldSizeUpdate: (LayoutCoordinates) -> Unit,
 ) {
-
-    val heightTextFields by remember {
-        mutableStateOf(40.dp)
-    }
-
-    var textFieldSize by remember {
-        mutableStateOf(Size.Zero)
-    }
-
-    var expanded by remember {
-        mutableStateOf(false)
-    }
-
     val cardColor = if (isSystemInDarkTheme()) {
         colorResource(id = R.color.auto_complete_light)
     } else {
@@ -74,11 +62,7 @@ fun AutoComplete(
     Column(
         modifier = Modifier
             .padding(30.dp)
-            .fillMaxWidth()
-            .clickable(onClick = {
-                expanded = false
-            }),
-
+            .fillMaxWidth(),
     ) {
         Text(
             modifier = Modifier.padding(start = 3.dp),
@@ -100,12 +84,12 @@ fun AutoComplete(
                             shape = RoundedCornerShape(20.dp),
                         )
                         .onGloballyPositioned { coordinates ->
-                            textFieldSize = coordinates.size.toSize()
+                            textFieldSizeUpdate(coordinates)
                         },
                     value = selectedEmployer,
                     onValueChange = {
-                        selectedEmployer = it
-                        expanded = true
+                        // expandedUpdate(!expanded)
+                        selectedEmployerUpdate(it)
                     },
                     colors = OutlinedTextFieldDefaults.colors(
                         cursorColor = Color.Black,
@@ -123,7 +107,7 @@ fun AutoComplete(
                     ),
                     singleLine = true,
                     trailingIcon = {
-                        IconButton(onClick = { expanded = !expanded }) {
+                        IconButton(onClick = { expandedUpdate(!expanded) }) {
                             Icon(
                                 modifier = Modifier.size(24.dp),
                                 imageVector = Icons.Rounded.KeyboardArrowDown,
@@ -156,19 +140,25 @@ fun AutoComplete(
                                     it.lowercase().contains(selectedEmployer.lowercase())
                                 }.sorted(),
                             ) {
-                                CategoryItems(title = it) { title ->
-                                    selectedEmployer = title
-                                    expanded = false
-                                }
+                                CategoryItems(
+                                    title = it,
+                                    expandedUpdate = expandedUpdate,
+                                    selectedEmployerUpdate = selectedEmployerUpdate,
+                                )
                             }
                         } else {
                             items(
                                 employers.sorted(),
                             ) {
-                                CategoryItems(title = it) { title ->
-                                    selectedEmployer = title
-                                    expanded = false
-                                }
+                                CategoryItems(
+                                    title = it,
+                                    expandedUpdate = expandedUpdate,
+                                    selectedEmployerUpdate = selectedEmployerUpdate,
+                                )
+//                                ) { title ->
+//                                    expandedUpdate(false)
+//                                    selectedEmployerUpdate(title)
+//                                }
                             }
                         }
                     }
@@ -181,13 +171,15 @@ fun AutoComplete(
 @Composable
 fun CategoryItems(
     title: String,
-    onSelect: (String) -> Unit,
+    expandedUpdate: (Boolean) -> Unit,
+    selectedEmployerUpdate: (String) -> Unit,
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-                onSelect(title)
+                //expandedUpdate(false)
+                selectedEmployerUpdate(title)
             }
             .padding(10.dp)
             .background(Color.Transparent),

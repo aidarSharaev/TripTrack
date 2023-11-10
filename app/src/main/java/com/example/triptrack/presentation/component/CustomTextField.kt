@@ -20,49 +20,49 @@ import com.example.triptrack.ui.theme.fontItalic
 
 @Composable
 fun CustomTextField(
-  field: MutableState<TextFieldValue>,
-  textColor: Color,
-  text: String = "",
-  focusManager: FocusManager,
-  pattern: Regex,
-  imeActions: ImeAction = ImeAction.Done,
-  onClickAction: Boolean = false,
-  length: Int,
-  keyboardType: KeyboardType
+    field: MutableState<TextFieldValue>,
+    textColor: Color,
+    text: String = "",
+    focusManager: FocusManager,
+    pattern: Regex,
+    imeActions: ImeAction = ImeAction.Done,
+    onClickAction: Boolean = false,
+    length: Int,
+    keyboardType: KeyboardType,
 ) {
-  val keyboardController = LocalSoftwareKeyboardController.current
-  val keyboardActions = if(onClickAction) {
-    KeyboardActions(
-      onNext = {
-        focusManager.moveFocus(focusDirection = FocusDirection.Down)
-      }
-    )
-  } else {
-    KeyboardActions(
-      onDone = {
-        keyboardController?.hide()
-      }
-    )
-  }
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val keyboardActions = if (onClickAction) {
+        KeyboardActions(
+            onNext = {
+                focusManager.moveFocus(focusDirection = FocusDirection.Down)
+            },
+        )
+    } else {
+        KeyboardActions(
+            onDone = {
+                keyboardController?.hide()
+            },
+        )
+    }
 
-  OutlinedTextField(
-    value = field.value,
-    onValueChange = { it ->
-      if(field.value.text.length < length && field.value.text.matches(pattern)) {
-        field.value = it
-      }
-    },
-    textStyle = TextStyle(fontFamily = fontItalic, fontSize = 20.sp),
-    label = { Text(text = text) },
-    colors = OutlinedTextFieldDefaults.colors(
-      focusedTextColor = textColor,
-      focusedBorderColor = Color.DarkGray,
-      unfocusedBorderColor = Color.Gray
-    ),
-    keyboardOptions = KeyboardOptions(
-      keyboardType = keyboardType,
-      imeAction = imeActions
-    ),
-    keyboardActions = keyboardActions
-  )
+    OutlinedTextField(
+        value = field.value,
+        onValueChange = { it ->
+            if (field.value.text.length < length && field.value.text.matches(pattern)) {
+                field.value = it
+            }
+        },
+        textStyle = TextStyle(fontFamily = fontItalic, fontSize = 20.sp),
+        label = { Text(text = text) },
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedTextColor = textColor,
+            focusedBorderColor = Color.DarkGray,
+            unfocusedBorderColor = Color.Gray,
+        ),
+        keyboardOptions = KeyboardOptions(
+            keyboardType = keyboardType,
+            imeAction = imeActions,
+        ),
+        keyboardActions = keyboardActions,
+    )
 }

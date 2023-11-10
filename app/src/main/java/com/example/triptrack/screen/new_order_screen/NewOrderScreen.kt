@@ -29,10 +29,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TooltipState
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,8 +39,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -70,8 +71,6 @@ fun NewOrderScreen(
 
     val context = LocalContext.current
 
-    val checkedState = remember { mutableStateOf(true) }
-
 //    val painter = if (isSystemInDarkTheme()) {
 //        painterResource(id = R.drawable.gradient_black)
 //    } else {
@@ -85,10 +84,6 @@ fun NewOrderScreen(
 //    }
 
     val routeValue = remember {
-        mutableStateOf(TextFieldValue(""))
-    }
-
-    val secondNameValue = remember {
         mutableStateOf(TextFieldValue(""))
     }
 
@@ -129,22 +124,33 @@ fun NewOrderScreen(
                 ),
             verticalArrangement = Arrangement.Top,
         ) {
-            DateSelection(context = context)
+            DateSelection(
+                date = uiState.value.date,
+                context = context,
+                orderDateChange = { viewModel.orderDateChange(it) },
+            )
 
             Spacer(modifier = Modifier.height(20.dp))
 
             NewOrderCard(
                 selectedEmployer = uiState.value.selectedEmployer,
                 employers = uiState.value.employerList,
-                checked = checkedState,
+                taxChecked = uiState.value.tax,
+                paymentChecked = uiState.value.pay,
                 profit = viewModel.profitValue,
                 cost = viewModel.costValue,
-                profitUpdate = {
-                    viewModel.profitUpdate(profitValue = it)
-                },
-                costUpdate = {
-                    viewModel.costUpdate(costValue = it)
-                },
+                expanded = viewModel.expanded,
+                textFieldSize = viewModel.textFieldSize,
+                profitUpdate = { viewModel.profitUpdate(it) },
+                costUpdate = { viewModel.costUpdate(it) },
+                selectedEmployerUpdate = { viewModel.selectedEmployerUpdate(it) },
+                expandedUpdate = { viewModel.expandedUpdate(it) },
+                textFieldSizeUpdate = { viewModel.textFieldSizeUpdate(it) },
+                taxTooltipState = viewModel.taxTooltipState,
+                paymentTooltipState = viewModel.paymentTooltipState,
+                taxCheckedUpdate = { viewModel.taxCheckedUpdate(it) },
+                paymentCheckedUpdate = { viewModel.paymentCheckedUpdate(it) },
+                changingProfitCostWithButton = { viewModel.changingProfitCostWithButton(it) },
             )
 
             Row(
@@ -162,7 +168,7 @@ fun NewOrderScreen(
                 )
             }
             TextButton(
-                onClick = { saveNewOrder },
+                onClick = { saveNewOrder() },
 
                 modifier = Modifier
                     .padding(top = 20.dp)
@@ -189,18 +195,27 @@ fun NewOrderScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewOrderCard(
     selectedEmployer: String,
+    selectedEmployerUpdate: (String) -> Unit,
     employers: MutableSet<String>,
-    checked: MutableState<Boolean>,
+    taxChecked: Boolean,
+    paymentChecked: Boolean,
     profit: String,
     cost: String,
+    expanded: Boolean,
     profitUpdate: (String) -> Unit,
     costUpdate: (String) -> Unit,
+    expandedUpdate: (Boolean) -> Unit,
+    textFieldSize: Size,
+    textFieldSizeUpdate: (LayoutCoordinates) -> Unit,
+    taxTooltipState: TooltipState,
+    paymentTooltipState: TooltipState,
+    taxCheckedUpdate: (Boolean) -> Unit,
+    paymentCheckedUpdate: (Boolean) -> Unit,
+    changingProfitCostWithButton: (String) -> Unit,
 ) {
-    val tooltipState = rememberTooltipState(isPersistent = true)
     Box(
         modifier = Modifier
             .height(470.dp)
@@ -217,20 +232,27 @@ fun NewOrderCard(
             horizontalArrangement = Arrangement.SpaceEvenly,
         ) {
             CheckboxTooltip(
-                tooltipState = tooltipState,
-                checked = checked,
+                tooltipState = taxTooltipState,
+                checkedUpdate = taxCheckedUpdate,
+                checked = taxChecked,
                 text = stringResource(id = R.string.tax),
             )
             CheckboxTooltip(
-                tooltipState = tooltipState,
-                checked = checked,
+                tooltipState = paymentTooltipState,
+                checkedUpdate = paymentCheckedUpdate,
+                checked = paymentChecked,
                 text = stringResource(id = R.string.payment),
             )
         }
         AutoComplete(
             selectedEmployer = selectedEmployer,
+            selectedEmployerUpdate = selectedEmployerUpdate,
             employers = employers,
             text = stringResource(id = R.string.employer),
+            expanded = expanded,
+            expandedUpdate = expandedUpdate,
+            textFieldSize = textFieldSize,
+            textFieldSizeUpdate = textFieldSizeUpdate,
         )
 
         Column(
@@ -265,9 +287,8 @@ fun NewOrderCard(
                 repeat(3) {
                     Surface(shadowElevation = 5.dp) {
                         ButtonWithMoneyValue(
-                            field = profit,
                             text = MONEY_VALUES_UP[it],
-                            onClick = profitUpdate,
+                            onClick = changingProfitCostWithButton,
                         )
                     }
                 }
@@ -295,9 +316,8 @@ fun NewOrderCard(
                 repeat(3) {
                     Surface(shadowElevation = 5.dp) {
                         ButtonWithMoneyValue(
-                            field = cost,
                             text = MONEY_VALUES_DOWN[it],
-                            onClick = costUpdate,
+                            onClick = changingProfitCostWithButton,
                         )
                     }
                 }
@@ -313,17 +333,16 @@ fun NewOrderScreenPreview() {
     NewOrderScreen(newOrderViewModel, { }, {})
 }
 
+// TODO onclick
 @Composable
 fun ButtonWithMoneyValue(
-    field: String,
     text: String,
     onClick: (String) -> Unit,
 ) {
     Button(
         shape = RoundedCornerShape(5.dp),
         onClick = {
-            val arg = (field.toInt() + (text.substring(1)).toInt()).toString()
-            onClick(arg)
+            onClick(text)
         },
         modifier = Modifier
             .border(

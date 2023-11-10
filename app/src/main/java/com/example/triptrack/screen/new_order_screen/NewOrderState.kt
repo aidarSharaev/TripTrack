@@ -1,11 +1,12 @@
 package com.example.triptrack.screen.new_order_screen
 
 data class NewOrderState(
-    val selectedEmployer: String = "",
-    val tax: Boolean = false,
-    val pay: Boolean = false,
-    val employerList: MutableSet<String> = mutableSetOf("булгарпиво", "степан", "ермак"),
-    val total: Int = 0,
-    val cost: Int = 0,
-    val profit: Int = 0,
+    var selectedEmployer: String = "",
+    var tax: Boolean = false,
+    var pay: Boolean = false,
+    var employerList: MutableSet<String> = mutableSetOf("булгарпиво", "степан", "ермак"),
+    var total: Int = 0,
+    var cost: Int = 0,
+    var profit: Int = 0,
+    var date: String = DATE.currentDate
 )

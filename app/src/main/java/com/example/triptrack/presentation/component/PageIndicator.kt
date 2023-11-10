@@ -15,20 +15,20 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun Indicator(
-  pageSize: Int,
-  selectedPage: Int
+    pageSize: Int,
+    selectedPage: Int,
 ) {
-  Row(modifier = Modifier) {
-    repeat(pageSize) { index ->
-      Box(
-        modifier = Modifier
-          .size(10.dp)
-          .clip(CircleShape)
-          .background(
-            color = if(index == selectedPage) Color.White else Color.Black
-          )
-      ) {}
-      Spacer(modifier = Modifier.width(2.dp))
+    Row(modifier = Modifier) {
+        repeat(pageSize) { index ->
+            Box(
+                modifier = Modifier
+                    .size(10.dp)
+                    .clip(CircleShape)
+                    .background(
+                        color = if (index == selectedPage) Color.Cyan else Color.LightGray,
+                    ),
+            ) {}
+            Spacer(modifier = Modifier.width(2.dp))
+        }
     }
-  }
 }
