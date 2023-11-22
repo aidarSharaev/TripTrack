@@ -8,6 +8,14 @@
     <string name="employer">Заказчик</string>
     <string name="nil">0</string>
     <string name="order_date">Дата заказа</string>
-    <string name="tax_payment">Была ли оплата налога</string>
-    <string name="profit_calc_and_for_new_version">Для подсчета прибыли и дальнейших обновлений</string>
+    <string name="tax_payment">Налог</string>
+    <string name="profit_calc_and_for_new_version">Была ли оплата за заказ?</string>
+    <string name="tax_calc_and_for_new_version">Есть ли налог на заказ?</string>
+    <string name="monthly_orders">Заказы за все время по месяцам</string>
+    <string name="orders_per_month">Заказы в месяц</string>
+    <string name="second_name">Фамилия</string>
+    <string name="first_name">Имя</string>
+    <string name="launch">Запустить</string>
+    <string name="type_developer">Написать создателю</string>
+
 </resources>

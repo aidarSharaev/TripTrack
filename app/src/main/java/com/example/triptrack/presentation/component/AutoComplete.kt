@@ -48,7 +48,7 @@ fun AutoComplete(
     selectedEmployerUpdate: (String) -> Unit,
     expanded: Boolean,
     expandedUpdate: (Boolean) -> Unit,
-    employers: Set<String>,
+    employers: List<String>,
     text: String,
     textFieldSize: Size,
     textFieldSizeUpdate: (LayoutCoordinates) -> Unit,
@@ -83,12 +83,14 @@ fun AutoComplete(
                             color = Color.Black,
                             shape = RoundedCornerShape(20.dp),
                         )
+                        .clickable {
+                            expandedUpdate(true)
+                        }
                         .onGloballyPositioned { coordinates ->
                             textFieldSizeUpdate(coordinates)
                         },
                     value = selectedEmployer,
                     onValueChange = {
-                        // expandedUpdate(!expanded)
                         selectedEmployerUpdate(it)
                     },
                     colors = OutlinedTextFieldDefaults.colors(
@@ -155,10 +157,6 @@ fun AutoComplete(
                                     expandedUpdate = expandedUpdate,
                                     selectedEmployerUpdate = selectedEmployerUpdate,
                                 )
-//                                ) { title ->
-//                                    expandedUpdate(false)
-//                                    selectedEmployerUpdate(title)
-//                                }
                             }
                         }
                     }
@@ -178,7 +176,7 @@ fun CategoryItems(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-                //expandedUpdate(false)
+                expandedUpdate(false)
                 selectedEmployerUpdate(title)
             }
             .padding(10.dp)

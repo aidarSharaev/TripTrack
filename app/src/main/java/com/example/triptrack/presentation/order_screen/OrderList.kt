@@ -1,6 +1,5 @@
 package com.example.triptrack.presentation.order_screen
 
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -38,7 +37,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.paging.LoadState
@@ -51,287 +49,288 @@ import com.example.triptrack.ui.theme.fontItalic
 
 @Composable
 fun OrderList(
-  orders: LazyPagingItems<Order>
+    orders: LazyPagingItems<Order>,
 ) {
-  val handlePagingResult = handlePagingResult(orders = orders)
-  if(handlePagingResult) {
-    LazyColumn(
-      modifier = Modifier.fillMaxSize(),
-      contentPadding = PaddingValues(all = 6.dp)
-    ) {
-      items(count = orders.itemCount) { it ->
-        orders[it]?.let {
-          OrderCard(order = it)
+    val handlePagingResult = handlePagingResult(orders = orders)
+    if (handlePagingResult) {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(all = 6.dp),
+        ) {
+            items(count = orders.itemCount) { it ->
+                orders[it]?.let {
+                    OrderCard(order = it)
+                }
+            }
         }
-      }
     }
-  }
 }
 
-@Composable
-@Preview(showBackground = true)
-@Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
-fun OrderCardPreview() {
-  OrderCard(
-    Order(
-      id = 123,
-      route = "Челны",
-      payment = true,
-      tax = true,
-      date = "23-01-2003",
-      income = 15000,
-      wastes = 3000,
-      profit = -12000
-    )
-  )
-  //OrderCardShimmerEffect()
-}
-
+//@Composable
+//@Preview(showBackground = true)
+//@Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
+//fun OrderCardPreview() {
+//    OrderCard(
+//        Order(
+//            id = 123,
+//            route = "Челны",
+//            payment = true,
+//            tax = true,
+//            date = "23-01-2003",
+//            income = 15000,
+//            wastes = 3000,
+//            profit = -12000,
+//        ),
+//    )
+//    // OrderCardShimmerEffect()
+//}
 
 val CardHeight = 128.dp
 val textSize = 18.sp
 val textSize2 = 17.sp
 
-
 @Composable
 fun OrderCard(order: Order) {
-
-  val textColor = if(isSystemInDarkTheme()) Color.White
-  else Color.Black
-
-  val moneyColor = if(order.profit < 0) Color.Red
-  else colorResource(id = R.color.order_info)
-
-  val textWhere = buildAnnotatedString {
-    withStyle(
-      style = SpanStyle(
-        color = textColor,
-        fontSize = textSize,
-        fontFamily = fontBold
-      )
-    ) {
-      append("Маршрут: ")
+    val textColor = if (isSystemInDarkTheme()) {
+        Color.White
+    } else {
+        Color.Black
     }
-    withStyle(
-      style = SpanStyle(
-        color = textColor,
-        fontFamily = fontItalic,
-        fontSize = textSize
-      )
-    ) {
-      append("\t ${order.route}")
-    }
-  }
 
-  val textEmployer = buildAnnotatedString {
-    withStyle(
-      style = SpanStyle(
-        fontFamily = fontBold,
-        color = textColor,
-        fontSize = textSize,
-      )
-    ) {
-      append("От кого: ")
+    val moneyColor = if (order.profit < 0) {
+        Color.Red
+    } else {
+        colorResource(id = R.color.order_info)
     }
-    withStyle(
-      style = SpanStyle(
-        color = textColor,
-        fontFamily = fontItalic,
-        fontSize = textSize
-      )
-    ) {
-      append("\t ${order.employerDescription ?: "Хер знает"}")
-    }
-  }
 
-  val textInfo = buildAnnotatedString {
-    withStyle(
-      style = SpanStyle(
-        color = moneyColor,
-        fontFamily = fontBold,
-        fontSize = textSize2
-        )
-    ) {
-      append("${order.profit} \t")
+    val textWhere = buildAnnotatedString {
+        withStyle(
+            style = SpanStyle(
+                color = textColor,
+                fontSize = textSize,
+                fontFamily = fontBold,
+            ),
+        ) {
+            append("Маршрут: ")
+        }
+        withStyle(
+            style = SpanStyle(
+                color = textColor,
+                fontFamily = fontItalic,
+                fontSize = textSize,
+            ),
+        ) {
+            append("\t ${order.route}")
+        }
     }
-    withStyle(
-      style = SpanStyle(
-        color = textColor,
-        fontFamily = fontBold,
-        fontSize = textSize2
-      )
-    ) {
-      append("${order.date} \t Налог")
-    }
-  }
 
-  Row(
-    modifier = Modifier
-      .clip(RoundedCornerShape(20.dp))
-      .background(
-        if(isSystemInDarkTheme()) colorResource(id = R.color.order_card_night)
-        else colorResource(id = R.color.order_card)
-      )
-      .height(CardHeight)
-      .padding(all = 8.dp)
-      .fillMaxWidth()
-  ) {
-    Row(Modifier.fillMaxSize()) {
-      Box(
-        contentAlignment = Alignment.Center,
+    val textEmployer = buildAnnotatedString {
+        withStyle(
+            style = SpanStyle(
+                fontFamily = fontBold,
+                color = textColor,
+                fontSize = textSize,
+            ),
+        ) {
+            append("От кого: ")
+        }
+        withStyle(
+            style = SpanStyle(
+                color = textColor,
+                fontFamily = fontItalic,
+                fontSize = textSize,
+            ),
+        ) {
+            append("\t ${order.employerName ?: "Хер знает"}")
+        }
+    }
+
+    val textInfo = buildAnnotatedString {
+        withStyle(
+            style = SpanStyle(
+                color = moneyColor,
+                fontFamily = fontBold,
+                fontSize = textSize2,
+            ),
+        ) {
+            append("${order.profit} \t")
+        }
+        withStyle(
+            style = SpanStyle(
+                color = textColor,
+                fontFamily = fontBold,
+                fontSize = textSize2,
+            ),
+        ) {
+            append("${order.date} \t Налог")
+        }
+    }
+
+    Row(
         modifier = Modifier
-          .fillMaxHeight()
-          .width(50.dp)
-      ) {
-        Text(
-          text = "${order.id}",
-          fontFamily = fontBold,
-          fontSize = textSize,
-          color = textColor
-        )
-      }
-      Column(
-        modifier = Modifier
-          .fillMaxSize()
-          .padding(top = 10.dp, start = 6.dp),
-        horizontalAlignment = Alignment.Start
-      ) {
-        Row {
-          Text(text = textWhere)
+            .clip(RoundedCornerShape(20.dp))
+            .background(
+                if (isSystemInDarkTheme()) {
+                    colorResource(id = R.color.order_card_night)
+                } else {
+                    colorResource(id = R.color.order_card)
+                },
+            )
+            .height(CardHeight)
+            .padding(all = 8.dp)
+            .fillMaxWidth(),
+    ) {
+        Row(Modifier.fillMaxSize()) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .width(50.dp),
+            ) {
+                Text(
+                    text = "${order.id}",
+                    fontFamily = fontBold,
+                    fontSize = textSize,
+                    color = textColor,
+                )
+            }
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = 10.dp, start = 6.dp),
+                horizontalAlignment = Alignment.Start,
+            ) {
+                Row {
+                    Text(text = textWhere)
+                }
+                Spacer(modifier = Modifier.height(5.dp))
+                Row {
+                    Text(text = textEmployer)
+                }
+                Spacer(modifier = Modifier.height(15.dp))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(text = textInfo)
+                    Spacer(modifier = Modifier.width(2.dp))
+                    Icon(
+                        painter = painterResource(id = R.drawable.done),
+                        contentDescription = null,
+                        tint = Color.Green,
+                    )
+                }
+            }
         }
-        Spacer(modifier = Modifier.height(5.dp))
-        Row {
-          Text(text = textEmployer)
-        }
-        Spacer(modifier = Modifier.height(15.dp))
-        Row(verticalAlignment = Alignment.CenterVertically) {
-          Text(text = textInfo)
-          Spacer(modifier = Modifier.width(2.dp))
-          Icon(
-            painter = painterResource(id = R.drawable.done), contentDescription = null,
-            tint = Color.Green
-          )
-        }
-      }
     }
-  }
-  Spacer(Modifier.height(8.dp))
+    Spacer(Modifier.height(8.dp))
 }
-
 
 @Composable
 fun handlePagingResult(
-  orders: LazyPagingItems<Order>
+    orders: LazyPagingItems<Order>,
 ): Boolean {
-
-  val loadState = orders.loadState
-  val error = when {
-    loadState.refresh is LoadState.Error -> loadState.refresh as LoadState.Error
-    loadState.prepend is LoadState.Error -> loadState.prepend as LoadState.Error
-    loadState.append is LoadState.Error -> loadState.append as LoadState.Error
-    else -> null
-  }
-
-
-  return when {
-    loadState.refresh is LoadState.Loading -> {
-      ShimmerEffect()
-      false
+    val loadState = orders.loadState
+    val error = when {
+        loadState.refresh is LoadState.Error -> loadState.refresh as LoadState.Error
+        loadState.prepend is LoadState.Error -> loadState.prepend as LoadState.Error
+        loadState.append is LoadState.Error -> loadState.append as LoadState.Error
+        else -> null
     }
 
-    else -> {
-      true
+    return when {
+        loadState.refresh is LoadState.Loading -> {
+            ShimmerEffect()
+            false
+        }
+
+        else -> {
+            true
+        }
     }
-  }
 }
 
 @Composable
 private fun ShimmerEffect() {
-  Column {
-    repeat(8) {
-      OrderCardShimmerEffect()
+    Column {
+        repeat(8) {
+            OrderCardShimmerEffect()
+        }
     }
-  }
 }
 
 @Composable
 fun OrderCardShimmerEffect(
-  modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
-  TripTrackTheme() {
-    Row(
-      modifier = modifier
-    ) {
-      Box(
-        modifier = Modifier
-          .height(CardHeight)
-          .clip(RoundedCornerShape(20.dp))
-          .padding(all = 8.dp)
-      ) {
-        Row {
-          Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-              .fillMaxHeight()
-              .width(50.dp)
-          ) {
+    TripTrackTheme() {
+        Row(
+            modifier = modifier,
+        ) {
             Box(
-              Modifier
-                .loadShimmerEffect()
-                .size(50.dp)
-            ) {} // yes
-          }
-          Column(
-            modifier = Modifier
-              .fillMaxSize(1f)
-              .padding(top = 10.dp, start = 6.dp),
-            horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.SpaceAround
-          ) {
-            Row(
-              Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.2f)
-                .loadShimmerEffect()
+                modifier = Modifier
+                    .height(CardHeight)
+                    .clip(RoundedCornerShape(20.dp))
+                    .padding(all = 8.dp),
             ) {
+                Row {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .width(50.dp),
+                    ) {
+                        Box(
+                            Modifier
+                                .loadShimmerEffect()
+                                .size(50.dp),
+                        ) {} // yes
+                    }
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize(1f)
+                            .padding(top = 10.dp, start = 6.dp),
+                        horizontalAlignment = Alignment.Start,
+                        verticalArrangement = Arrangement.SpaceAround,
+                    ) {
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .fillMaxHeight(0.2f)
+                                .loadShimmerEffect(),
+                        ) {
+                        }
+                        Spacer(modifier = Modifier.fillMaxHeight(0.05f))
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .fillMaxHeight(0.3f)
+                                .loadShimmerEffect(),
+                        ) {
+                        }
+                        Spacer(modifier = Modifier.fillMaxHeight(0.05f))
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .fillMaxHeight(0.4f)
+                                .loadShimmerEffect(),
+                        ) {
+                        }
+                    }
+                }
             }
-            Spacer(modifier = Modifier.fillMaxHeight(0.05f))
-            Row(
-              Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.3f)
-                .loadShimmerEffect()
-            ) {
-            }
-            Spacer(modifier = Modifier.fillMaxHeight(0.05f))
-            Row(
-              Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.4f)
-                .loadShimmerEffect()
-            ) {
-            }
-          }
         }
-      }
     }
-  }
 }
-
 
 fun Modifier.loadShimmerEffect(): Modifier = composed {
-  val infiniteTransition = rememberInfiniteTransition()
-  val alphaValue by infiniteTransition.animateFloat(
-    initialValue = 0.2f,
-    targetValue = 0.7f,
-    animationSpec = infiniteRepeatable(
-      animation = tween(durationMillis = 1000, easing = LinearEasing),
-      repeatMode = RepeatMode.Reverse
+    val infiniteTransition = rememberInfiniteTransition()
+    val alphaValue by infiniteTransition.animateFloat(
+        initialValue = 0.2f,
+        targetValue = 0.7f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 1000, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse,
+        ),
     )
-  )
-  background(color = colorResource(id = R.color.shimmer).copy(alpha = alphaValue))
+    background(color = colorResource(id = R.color.shimmer).copy(alpha = alphaValue))
 }
 
-//todo empty screen
-
-
+// todo empty screen

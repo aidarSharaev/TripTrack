@@ -13,10 +13,12 @@ import com.example.triptrack.domain.usecaces.local_data.bank_data.InsertBankData
 import com.example.triptrack.domain.usecaces.local_data.bank_data.UpdateBankData
 import com.example.triptrack.domain.usecaces.local_data.employer.DeleteEmployer
 import com.example.triptrack.domain.usecaces.local_data.employer.EmployerUseCases
-import com.example.triptrack.domain.usecaces.local_data.employer.GetEmployerById
+import com.example.triptrack.domain.usecaces.local_data.employer.GetEmployerByName
 import com.example.triptrack.domain.usecaces.local_data.employer.GetEmployers
 import com.example.triptrack.domain.usecaces.local_data.employer.InsertEmployer
 import com.example.triptrack.domain.usecaces.local_data.order.DeleteOrder
+import com.example.triptrack.domain.usecaces.local_data.order.GetAbsolutelyAllOrdersExceptForLast5Months
+import com.example.triptrack.domain.usecaces.local_data.order.GetCountOfOrdersMonth
 import com.example.triptrack.domain.usecaces.local_data.order.GetOrderById
 import com.example.triptrack.domain.usecaces.local_data.order.GetOrderPaging
 import com.example.triptrack.domain.usecaces.local_data.order.InsertOrder
@@ -38,94 +40,95 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {
 
-  @Provides
-  @Singleton
-  fun provideDatabase(
-    @ApplicationContext context: Context
-  ): TripTrackDatabase {
-    return Room.databaseBuilder(
-      context,
-      TripTrackDatabase::class.java,
-      TRIP_TRACK_DATABASE
-    ).build()
-  }
+    @Provides
+    @Singleton
+    fun provideDatabase(
+        @ApplicationContext context: Context,
+    ): TripTrackDatabase {
+        return Room.databaseBuilder(
+            context,
+            TripTrackDatabase::class.java,
+            TRIP_TRACK_DATABASE,
+        ).build()
+    }
 
-  @Provides
-  @Singleton
-  fun providesOrderDao(tripTrackDatabase: TripTrackDatabase): OrderDao =
-    tripTrackDatabase.orderDao()
+    @Provides
+    @Singleton
+    fun providesOrderDao(tripTrackDatabase: TripTrackDatabase): OrderDao =
+        tripTrackDatabase.orderDao()
 
-  @Provides
-  @Singleton
-  fun providesEmployerDao(tripTrackDatabase: TripTrackDatabase): EmployerDao =
-    tripTrackDatabase.employerDao()
+    @Provides
+    @Singleton
+    fun providesEmployerDao(tripTrackDatabase: TripTrackDatabase): EmployerDao =
+        tripTrackDatabase.employerDao()
 
-  @Provides
-  @Singleton
-  fun providesProfileInfoDao(tripTrackDatabase: TripTrackDatabase): ProfileInfoDao =
-    tripTrackDatabase.profileInfoDao()
+    @Provides
+    @Singleton
+    fun providesProfileInfoDao(tripTrackDatabase: TripTrackDatabase): ProfileInfoDao =
+        tripTrackDatabase.profileInfoDao()
 
-  @Provides
-  @Singleton
-  fun providesBankDataDao(tripTrackDatabase: TripTrackDatabase): BankDataDao =
-    tripTrackDatabase.bankDataDao()
+    @Provides
+    @Singleton
+    fun providesBankDataDao(tripTrackDatabase: TripTrackDatabase): BankDataDao =
+        tripTrackDatabase.bankDataDao()
 
-  @Provides
-  @Singleton
-  fun provideOrderRepository(
-    orderDao: OrderDao
-  ): OrderRepository {
-    return OrderRepositoryImpl(orderDao)
-  }
+    @Provides
+    @Singleton
+    fun provideOrderRepository(
+        orderDao: OrderDao,
+    ): OrderRepository {
+        return OrderRepositoryImpl(orderDao)
+    }
 
-  @Provides
-  @Singleton
-  fun provideProfileUseCases(
-    profileInfoDao: ProfileInfoDao
-  ): ProfileUseCases {
-    return ProfileUseCases(
-      getProfile = GetProfile(profileInfoDao = profileInfoDao),
-      insertProfile = InsertProfile(profileInfoDao = profileInfoDao)
-    )
-  }
+    @Provides
+    @Singleton
+    fun provideProfileUseCases(
+        profileInfoDao: ProfileInfoDao,
+    ): ProfileUseCases {
+        return ProfileUseCases(
+            getProfile = GetProfile(profileInfoDao = profileInfoDao),
+            insertProfile = InsertProfile(profileInfoDao = profileInfoDao),
+        )
+    }
 
-  @Provides
-  @Singleton
-  fun provideOrderUseCases(
-    orderDao: OrderDao,
-    orderRepository: OrderRepository
-  ): OrderUseCases {
-    return OrderUseCases(
-      deleteOrder = DeleteOrder(orderDao = orderDao),
-      getOrderById = GetOrderById(orderDao = orderDao),
-      getOrderPaging = GetOrderPaging(orderRepository = orderRepository),
-      insertOrder = InsertOrder(orderDao = orderDao),
-      orderCount = OrderCount(orderDao = orderDao)
-    )
-  }
+    @Provides
+    @Singleton
+    fun provideOrderUseCases(
+        orderDao: OrderDao,
+        orderRepository: OrderRepository,
+    ): OrderUseCases {
+        return OrderUseCases(
+            deleteOrder = DeleteOrder(orderDao = orderDao),
+            getOrderById = GetOrderById(orderDao = orderDao),
+            getOrderPaging = GetOrderPaging(orderRepository = orderRepository),
+            insertOrder = InsertOrder(orderDao = orderDao),
+            getOrderCount = OrderCount(orderDao = orderDao),
+            getCountOfOrdersMonth = GetCountOfOrdersMonth(orderDao = orderDao),
+            getAbsolutelyAllOrdersExceptForLast5Months = GetAbsolutelyAllOrdersExceptForLast5Months(orderDao = orderDao)
+        )
+    }
 
-  @Provides
-  @Singleton
-  fun provideEmployerUseCases(
-    employerDao: EmployerDao,
-  ): EmployerUseCases {
-    return EmployerUseCases(
-      deleteEmployer = DeleteEmployer(employerDao = employerDao),
-      getEmployerById = GetEmployerById(employerDao = employerDao),
-      getEmployers = GetEmployers(employerDao = employerDao),
-      insertEmployer = InsertEmployer(employerDao = employerDao)
-    )
-  }
+    @Provides
+    @Singleton
+    fun provideEmployerUseCases(
+        employerDao: EmployerDao,
+    ): EmployerUseCases {
+        return EmployerUseCases(
+            deleteEmployer = DeleteEmployer(employerDao = employerDao),
+            getEmployerByName = GetEmployerByName(employerDao = employerDao),
+            getEmployers = GetEmployers(employerDao = employerDao),
+            insertEmployer = InsertEmployer(employerDao = employerDao),
+        )
+    }
 
-  @Provides
-  @Singleton
-  fun provideBankDataUseCases(
-    bankDataDao: BankDataDao
-  ): BankDataUseCases {
-    return BankDataUseCases(
-      updateBankData = UpdateBankData(bankDataDao = bankDataDao),
-      insertBankData = InsertBankData(bankDataDao = bankDataDao)
-    )
-  }
-
+    @Provides
+    @Singleton
+    fun provideBankDataUseCases(
+        bankDataDao: BankDataDao,
+    ): BankDataUseCases {
+        return BankDataUseCases(
+            updateBankData = UpdateBankData(bankDataDao = bankDataDao),
+            insertBankData = InsertBankData(bankDataDao = bankDataDao),
+        )
+    }
 }

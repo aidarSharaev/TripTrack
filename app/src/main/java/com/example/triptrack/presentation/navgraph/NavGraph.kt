@@ -21,7 +21,9 @@ fun NavGraph(
         ) {
             composable(route = Route.OnBoardingScreen.route) {
                 val viewModel: OnBoardingViewModel = hiltViewModel()
-                OnBoardingScreen(event = viewModel::onEvent)
+                OnBoardingScreen(
+                    viewModel = viewModel,
+                )
             }
         }
         navigation(
@@ -31,7 +33,7 @@ fun NavGraph(
             composable(
                 route = Route.HomeScreen.route,
             ) {
-                HomeNavigator(startDestination = Route.HomeScreenNavigation.route)
+                HomeNavigator(startDestination = Route.HomeScreen.route)
             }
         }
     }

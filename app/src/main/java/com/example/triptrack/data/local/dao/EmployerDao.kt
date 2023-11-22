@@ -11,11 +11,11 @@ import com.example.triptrack.utils.Constants.EMPLOYER_TABLE
 @Dao
 interface EmployerDao {
 
-    @Query("select * from $EMPLOYER_TABLE")
-    fun getAllEmployers(): List<Employer>
+    @Query("select description from $EMPLOYER_TABLE")
+    fun getAllEmployers(): List<String>
 
     @Query("select * from $EMPLOYER_TABLE where description = :description")
-    suspend fun getEmployerById(description: String): Employer
+    suspend fun getEmployerByName(description: String): Employer?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertEmployer(employer: Employer)

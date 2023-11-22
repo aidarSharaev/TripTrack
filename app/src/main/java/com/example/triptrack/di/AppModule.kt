@@ -16,19 +16,18 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
-  @Provides
-  @Singleton
-  fun provideLocalUserManager(
-    application: Application
-  ) : LocalUserManager = LocalUserManagerImpl(application)
+    @Provides
+    @Singleton
+    fun provideLocalUserManager(
+        application: Application,
+    ): LocalUserManager = LocalUserManagerImpl(application)
 
-  @Provides
-  @Singleton
-  fun provideAppEntryUseCases(
-    localUserManager: LocalUserManager
-  ) = AppEntryUseCases(
-    readAppEntry = ReadAppEntry(localUserManager),
-    saveAppEntry = SaveAppEntry(localUserManager)
-  )
-
+    @Provides
+    @Singleton
+    fun provideAppEntryUseCases(
+        localUserManager: LocalUserManager,
+    ) = AppEntryUseCases(
+        readAppEntry = ReadAppEntry(localUserManager),
+        saveAppEntry = SaveAppEntry(localUserManager),
+    )
 }

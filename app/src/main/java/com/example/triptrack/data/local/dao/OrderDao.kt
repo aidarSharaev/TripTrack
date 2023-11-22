@@ -7,10 +7,11 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.triptrack.model.Order
 import com.example.triptrack.utils.Constants.ORDER_TABLE
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface OrderDao {
-// todo desc
+    // todo desc
     @Query(value = "select * from $ORDER_TABLE order by id asc")
     fun loadAllOrdersPaged(): List<Order>
 
@@ -18,7 +19,13 @@ interface OrderDao {
     suspend fun getOrderById(id: Int): Order
 
     @Query(value = "select count(*) from $ORDER_TABLE")
-    suspend fun getOrderCount(): Int
+    fun getOrderCount(): Flow<Int>
+
+    @Query(value = "select count(*) from $ORDER_TABLE where date between '01/01/1900' and '01/' || :month || '/' || :year || '%'")
+    fun getAbsolutelyAllOrdersExceptForLast5Months(month: String, year: String): Flow<Int>
+
+    @Query(value = "select count(*) from $ORDER_TABLE where date like '%/' || :month || '/' || :year || '%'")
+    fun getCountOfOrdersByMonth(month: String, year: String): Flow<Int>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertOrder(order: Order)

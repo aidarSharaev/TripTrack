@@ -11,7 +11,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,12 +25,11 @@ class MainViewModel @Inject constructor(
         private set
 
     init {
-        viewModelScope.launch { }
         appEntryUseCases.readAppEntry().onEach { shouldStartFromHomeScreen ->
-            if (shouldStartFromHomeScreen) {
-                startDestination = Route.HomeScreenNavigation.route
+            startDestination = if (shouldStartFromHomeScreen) {
+                Route.HomeScreenNavigation.route
             } else {
-                startDestination = Route.AppStartNavigation.route
+                Route.AppStartNavigation.route
             }
             delay(800)
             splashCondition = false

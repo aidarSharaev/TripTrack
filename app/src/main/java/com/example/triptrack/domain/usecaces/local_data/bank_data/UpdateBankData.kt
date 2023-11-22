@@ -5,11 +5,10 @@ import com.example.triptrack.model.BankData
 import javax.inject.Inject
 
 class UpdateBankData @Inject constructor(
-  private val bankDataDao: BankDataDao
+    private val bankDataDao: BankDataDao,
 ) {
 
-  suspend operator fun invoke(bankData: BankData) {
-    bankDataDao.updateBankData(bankData = bankData)
-  }
-
+    suspend operator fun invoke(bankData: BankData) {
+        bankDataDao.updateBankData(bankData = bankData)
+    }
 }

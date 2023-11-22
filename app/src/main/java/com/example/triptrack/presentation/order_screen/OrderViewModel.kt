@@ -20,7 +20,7 @@ class OrderViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            repeat(40) { index ->
+            repeat(6) { index ->
                 orderUseCases.insertOrder(
                     Order(
                         id = index + 123,
@@ -30,6 +30,7 @@ class OrderViewModel @Inject constructor(
                         date = "23-10-$index",
                         income = index * 5 + index,
                         profit = index * 5 + index,
+                        employerName = "Булгар"
                     ),
                 )
             }

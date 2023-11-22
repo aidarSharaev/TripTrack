@@ -4,11 +4,10 @@ import com.example.triptrack.data.local.dao.OrderDao
 import com.example.triptrack.model.Order
 
 class DeleteOrder(
-  private val orderDao: OrderDao
+    private val orderDao: OrderDao,
 ) {
 
-  suspend operator fun invoke(order: Order) {
-    orderDao.deleteOrderById(order = order)
-  }
-
+    suspend operator fun invoke(order: Order) {
+        orderDao.deleteOrderById(order = order)
+    }
 }

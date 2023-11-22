@@ -47,14 +47,16 @@ object CALENDAR {
 fun DateSelection(
     context: Context,
     date: String,
-    orderDateChange: (String) -> Unit
+    orderDateChange: (String) -> Unit,
 ) {
     calendar.time = Date()
 
     val datePickerDialog = DatePickerDialog(
         context,
         { _: DatePicker, _year: Int, _month: Int, _day: Int ->
-            orderDateChange("$_day/${_month + 1}/$_year")
+            val dayToString = if (_day < 10) "0$_day" else "$_day"
+            val monthToString = if (_month + 1 < 10) "0${_month + 1}" else "${_month + 1}"
+            orderDateChange("$dayToString/$monthToString/$_year")
         },
         year,
         month,

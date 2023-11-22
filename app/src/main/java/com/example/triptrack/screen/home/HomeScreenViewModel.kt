@@ -23,7 +23,7 @@ class HomeScreenViewModel @Inject constructor(
     // TODO("fun facts")
     private fun downloadFacts() {
         viewModelScope.launch {
-            _state.value = _state.value.copy(facts = orderUseCases.orderCount())
+            //_state.value = _state.value.copy(facts = orderUseCases.orderCount())
         }
     }
 }

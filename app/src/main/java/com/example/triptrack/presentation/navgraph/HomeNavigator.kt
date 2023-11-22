@@ -1,7 +1,5 @@
 package com.example.triptrack.presentation.navgraph
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Home
@@ -14,18 +12,19 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.example.triptrack.screen.home.HomeScreen
 import com.example.triptrack.screen.home.HomeScreenViewModel
 import com.example.triptrack.screen.new_order_screen.NewOrderScreen
 import com.example.triptrack.screen.new_order_screen.NewOrderViewModel
+import com.example.triptrack.screen.profile.ProfileScreen
+import com.example.triptrack.screen.statistics.StatisticsScreen
+import com.example.triptrack.screen.statistics.StatisticsViewModel
 
 @Composable
 fun HomeNavigator(
@@ -52,9 +51,9 @@ fun HomeNavigator(
     }
 
     selectedItem = when (backStack?.destination?.route) {
-        Route.HomeScreenNavigation.route -> 0
-        Route.StatScreenNavigation.route -> 1
-        Route.ProfileScreenNavigation.route -> 2
+        Route.HomeScreen.route -> 0
+        Route.StatScreen.route -> 1
+        Route.ProfileScreen.route -> 2
         else -> 0
     }
 
@@ -72,51 +71,43 @@ fun HomeNavigator(
         },
 
     ) {
-        Column(modifier = Modifier.padding(it)) {
-        }
+        val bottomPadding = it.calculateBottomPadding()
         NavHost(
             navController = navController,
             startDestination = startDestination,
         ) {
-            navigation(
-                route = Route.HomeScreenNavigation.route,
-                startDestination = Route.HomeScreen.route,
-            ) {
-                composable(route = Route.HomeScreen.route) {
-                    val viewModel = hiltViewModel<HomeScreenViewModel>()
-                    val state = viewModel.state
-                    HomeScreen(
-                        state = state,
-                        navController = navController,
-                        onClick = {
-                            navController.navigate(route = Route.NewOrderScreen.route)
-                        },
-                    )
-                }
-                composable(route = Route.NewOrderScreen.route) {
-                    val newOrderViewModel: NewOrderViewModel = hiltViewModel()
-                    NewOrderScreen(
-                        viewModel = newOrderViewModel,
-                        navigateUp = { navController.navigateUp() },
-                        saveNewOrder = {},
-                    )
-                }
+            composable(route = Route.HomeScreen.route) {
+                val viewModel: HomeScreenViewModel = hiltViewModel()
+                val state = viewModel.state
+                HomeScreen(
+                    state = state,
+                    navController = navController,
+                    onClick = {
+                        navController.navigate(route = Route.NewOrderScreen.route)
+                    },
+                )
             }
-            navigation(
-                route = Route.StatScreenNavigation.route,
-                startDestination = Route.StatScreen.route,
-            ) {
-                composable(route = Route.StatScreen.route) {
-                    StatNavigator()
-                }
+            composable(route = Route.NewOrderScreen.route) {
+                val viewModel: NewOrderViewModel = hiltViewModel()
+                NewOrderScreen(
+                    viewModel = viewModel,
+                    navigateUp = { navController.navigateUp() },
+                )
             }
-            navigation(
-                route = Route.ProfileScreenNavigation.route,
-                startDestination = Route.StatScreen.route,
-            ) {
-                composable(route = Route.ProfileScreen.route) {
-                    ProfileNavigator()
-                }
+            composable(route = Route.StatScreen.route) {
+                val viewModel: StatisticsViewModel = hiltViewModel()
+                StatisticsScreen(
+                    navController = navController,
+                    viewModel = viewModel,
+                )
+            }
+
+            composable(route = Route.ProfileScreen.route) {
+                ProfileScreen()
+            }
+
+            composable(route = Route.ProfileScreen.route) {
+                ProfileScreen()
             }
         }
     }
@@ -148,15 +139,13 @@ fun navigateChoice(index: Int, navController: NavController) {
                 navController = navController,
                 route = Route.StatScreen.route,
             )
-            // new graph?
         }
 
         2 -> {
             navigateToTap(
                 navController = navController,
-                route = Route.HomeScreen.route,
+                route = Route.ProfileScreen.route,
             )
-            // new graph?
         }
 
         else -> {

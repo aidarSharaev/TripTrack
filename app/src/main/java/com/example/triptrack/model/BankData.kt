@@ -17,4 +17,5 @@ data class BankData(
     val swift: String,
     val snils: String,
     val inn: String,
+    val passport: String,
 )

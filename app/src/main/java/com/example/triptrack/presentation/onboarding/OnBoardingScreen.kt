@@ -5,17 +5,19 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.example.triptrack.presentation.component.BottomComponent
-import com.example.triptrack.presentation.order_screen.FirstEntryScreen
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun OnBoardingScreen(
-    event: (OnBoardingEvent) -> Unit,
+    viewModel: OnBoardingViewModel,
 ) {
+    val uiState = viewModel.uiState.collectAsState()
+
     val pagerState = rememberPagerState(
         initialPage = 0,
         pageCount = { pagesList.size },
@@ -40,7 +42,16 @@ fun OnBoardingScreen(
         // beyondBoundsPageCount = beyondBoundsPageCount
     ) { index ->
         when (index) {
-            pagesList.lastIndex -> FirstEntryScreen(onEvent = event)
+            pagesList.lastIndex -> FirstEntryScreen(
+                onClick = { viewModel.onCompleteButtonClick() },
+                firstName = viewModel.firstName,
+                secondName = viewModel.secondName,
+                firstNameChange = { viewModel.firstNameChange(it) },
+                secondNameChange = { viewModel.secondNameChange(it) },
+                firstNameError = viewModel.firstNameIsEmpty,
+                secondNameError = viewModel.secondNameIsEmpty,
+            )
+
             else -> OnBoardingPage(page = pagesList[index])
         }
     }

@@ -9,10 +9,9 @@ import com.example.triptrack.model.BankData
 @Dao
 interface BankDataDao {
 
-  @Insert(onConflict = OnConflictStrategy.REPLACE)
-  suspend fun insertBankData(bankData: BankData)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertBankData(bankData: BankData)
 
-  @Update
-  suspend fun updateBankData(bankData: BankData)
-
+    @Update
+    suspend fun updateBankData(bankData: BankData)
 }

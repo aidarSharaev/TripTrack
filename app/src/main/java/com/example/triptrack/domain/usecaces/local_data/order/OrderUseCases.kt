@@ -5,5 +5,7 @@ data class OrderUseCases(
     val getOrderById: GetOrderById,
     val getOrderPaging: GetOrderPaging,
     val insertOrder: InsertOrder,
-    val orderCount: OrderCount,
+    val getOrderCount: OrderCount,
+    val getCountOfOrdersMonth: GetCountOfOrdersMonth,
+    val getAbsolutelyAllOrdersExceptForLast5Months: GetAbsolutelyAllOrdersExceptForLast5Months,
 )

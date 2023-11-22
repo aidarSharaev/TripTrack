@@ -4,6 +4,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.triptrack.data.local.dao.OrderDao
 import com.example.triptrack.model.Order
+import kotlinx.coroutines.flow.onEach
 
 class OrdersPagingSource(
     private val orderDao: OrderDao,
@@ -16,7 +17,10 @@ class OrdersPagingSource(
     }
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Order> {
-        val count = orderDao.getOrderCount()
+        var count: Int = 0
+        orderDao.getOrderCount().onEach {
+            count = it
+        }
         var currentCount = 0
         val page = params.key ?: 1
         return try {

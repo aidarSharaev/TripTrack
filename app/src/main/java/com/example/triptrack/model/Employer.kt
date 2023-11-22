@@ -6,8 +6,9 @@ import com.example.triptrack.utils.Constants.EMPLOYER_TABLE
 
 @Entity(tableName = EMPLOYER_TABLE)
 data class Employer(
-    @PrimaryKey(autoGenerate = false)
-    val description: String,
-    val orderCount: Int,
-    val amountMoney: Int,
+    @PrimaryKey
+    val description: String, // имя заказчика
+    val orderCount: Int = 0, // количество заказов
+    val amountMoney: Int = 0, // количество денег
 )
+

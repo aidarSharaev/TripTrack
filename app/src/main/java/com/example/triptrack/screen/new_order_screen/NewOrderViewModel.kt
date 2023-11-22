@@ -1,6 +1,5 @@
 package com.example.triptrack.screen.new_order_screen
 
-import android.annotation.SuppressLint
 import androidx.compose.material3.TooltipState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -9,23 +8,34 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.unit.toSize
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import co.yml.charts.common.extensions.isNotNull
+import com.example.triptrack.domain.usecaces.local_data.employer.EmployerUseCases
+import com.example.triptrack.domain.usecaces.local_data.order.OrderUseCases
+import com.example.triptrack.model.Employer
+import com.example.triptrack.model.Order
+import com.example.triptrack.utils.DATE
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.update
-import java.text.SimpleDateFormat
+import kotlinx.coroutines.launch
 import java.util.Date
 import javax.inject.Inject
 
-object DATE {
-    @SuppressLint("SimpleDateFormat")
-    val simpleDataFormat = SimpleDateFormat("dd/M/yyyy")
-    val currentDate: String by mutableStateOf(simpleDataFormat.format(Date()))
-}
 
+
+@HiltViewModel
 class NewOrderViewModel
-@Inject constructor() : ViewModel() {
+@Inject constructor(
+    private val orderUseCases: OrderUseCases,
+    private val employerUseCases: EmployerUseCases,
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(NewOrderState())
     val uiState: StateFlow<NewOrderState> = _uiState.asStateFlow()
@@ -41,33 +51,88 @@ class NewOrderViewModel
     val taxTooltipState by mutableStateOf(TooltipState(isPersistent = true))
     val paymentTooltipState by mutableStateOf(TooltipState(isPersistent = true))
 
-    fun costUpdate(costValue: String) {
-        val cost = costValue.toInt()
-        this.costValue = costValue
-        _uiState.update { currentState ->
-            currentState.copy(
-                cost = cost,
-                total = (_uiState.value.profit - cost),
+    fun costUpdateNotState(costString: String) {
+        val cost: Int? = costString.toIntOrNull()
+        if (cost != null) {
+            updateCostState(
+                costString = costString,
+                cost = -cost,
+                total = (-cost + _uiState.value.income),
+            )
+        } else {
+            updateCostState(
+                total = (_uiState.value.income),
             )
         }
     }
 
-    fun profitUpdate(profitValue: String) {
-        val profit = profitValue.toInt()
-        this.profitValue = profitValue
+    fun profitUpdateNotState(profitString: String) {
+        val profit: Int? = profitString.toIntOrNull()
+        if (profit != null) {
+            updateProfitState(
+                profitString = profitString,
+                profit = profit,
+                total = (profit + _uiState.value.wastes),
+            )
+        } else {
+            updateProfitState(
+                total = (_uiState.value.wastes),
+            )
+        }
+    }
+
+    private fun updateProfitState(
+        profitString: String = "",
+        profit: Int = 0,
+        total: Int,
+    ) {
+        profitValue = profitString
         _uiState.update { currentState ->
             currentState.copy(
-                profit = profit,
-                total = (profit - _uiState.value.cost),
+                income = profit,
+                total = total,
             )
+        }
+    }
+
+    private fun updateCostState(
+        costString: String = "",
+        cost: Int = 0,
+        total: Int,
+    ) {
+        costValue = costString
+        _uiState.update { currentState ->
+            currentState.copy(
+                wastes = cost,
+                total = total,
+            )
+        }
+    }
+
+    init {
+        collectEmployers()
+    }
+
+    private fun collectEmployers() {
+        viewModelScope.launch {
+            employerUseCases.getEmployers()
+                .flowOn(Dispatchers.IO)
+                .catch { e ->
+                    println(e.stackTrace)
+                }
+                .collect { employerList ->
+                    _uiState.update { newState ->
+                        newState.copy(
+                            employerList = employerList,
+                        )
+                    }
+                }
         }
     }
 
     fun selectedEmployerUpdate(employer: String) {
         _uiState.update { newOrderState ->
-            newOrderState.copy(
-                selectedEmployer = employer,
-            )
+            newOrderState.copy(employerName = employer)
         }
     }
 
@@ -87,20 +152,16 @@ class NewOrderViewModel
 
     fun paymentCheckedUpdate(checked: Boolean) {
         _uiState.update { newOrderState ->
-            newOrderState.copy(pay = checked)
+            newOrderState.copy(payment = checked)
         }
     }
 
     fun orderDateChange(date: String) {
         _uiState.update { newState ->
             if (checkDateValid(date)) {
-                newState.copy(
-                    date = date,
-                )
+                newState.copy(date = date)
             } else {
-                newState.copy(
-                    date = DATE.currentDate,
-                )
+                newState.copy(date = DATE.currentDate)
             }
         }
     }
@@ -127,7 +188,7 @@ class NewOrderViewModel
 
     fun changingProfitCostWithButton(text: String) {
         val value = text.substring(1).toIntOrNull()
-        val field: String = if (text[0] == '+') {
+        val field = if (text[0] == '+') {
             profitValue
         } else {
             costValue
@@ -135,16 +196,80 @@ class NewOrderViewModel
         val fieldNotEmpty = field.toIntOrNull()
         fieldNotEmpty?.let {
             if (text[0] == '+') {
-                profitUpdate((fieldNotEmpty + value!!).toString())
+                profitUpdateNotState((fieldNotEmpty + value!!).toString())
             } else {
-                costUpdate((fieldNotEmpty + value!!).toString())
+                costUpdateNotState((fieldNotEmpty + value!!).toString())
             }
         } ?: run {
             if (text[0] == '+') {
-                profitUpdate((value!!).toString())
+                profitUpdateNotState((value!!).toString())
             } else {
-                costUpdate((value!!).toString())
+                costUpdateNotState((value!!).toString())
             }
+        }
+    }
+
+    fun saveNewOrder(): Boolean {
+        if (!checkingCorrectness()) return false
+        viewModelScope.launch {
+            val description = _uiState.value.employerName
+            checkingExistenceEmployer(description = description)
+            delay(300)
+            insertOrder(description = description)
+        }
+        return true
+    }
+
+    private fun checkingExistenceEmployer(description: String) {
+        viewModelScope.launch {
+            val employer: Employer? =
+                employerUseCases.getEmployerByName(description = description)
+            employer?.let {
+                insertEmployer(
+                    Employer(
+                        description = description,
+                        orderCount = employer.orderCount + 1,
+                        amountMoney = employer.amountMoney + _uiState.value.total,
+                    ),
+                )
+            } ?: run {
+                insertEmployer(
+                    Employer(
+                        description = description,
+                        orderCount = 1,
+                        amountMoney = _uiState.value.total,
+                    ),
+                )
+            }
+        }
+    }
+
+    private fun checkingCorrectness(): Boolean {
+        return !(_uiState.value.employerName == "" || _uiState.value.income == 0)
+    }
+
+    private fun insertEmployer(employer: Employer) {
+        viewModelScope.launch {
+            employerUseCases.insertEmployer(
+                employer = employer,
+            )
+        }
+    }
+
+    private fun insertOrder(description: String) {
+        viewModelScope.launch {
+            orderUseCases.insertOrder(
+                Order(
+                    employerName = description,
+                    route = "Челны",
+                    payment = _uiState.value.payment,
+                    tax = _uiState.value.tax,
+                    date = _uiState.value.date,
+                    income = _uiState.value.income,
+                    wastes = _uiState.value.wastes,
+                    profit = (_uiState.value.income + _uiState.value.wastes),
+                ),
+            )
         }
     }
 }

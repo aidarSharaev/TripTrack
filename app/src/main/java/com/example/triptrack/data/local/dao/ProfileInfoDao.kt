@@ -9,10 +9,9 @@ import com.example.triptrack.model.ProfileInfo
 @Dao
 interface ProfileInfoDao {
 
-  @Insert(onConflict = OnConflictStrategy.REPLACE)
-  suspend fun insertProfileInfo(profileInfo: ProfileInfo)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertProfileInfo(profileInfo: ProfileInfo)
 
-  @Query("select * from PROFILE_INFORMATION_TABLE")
-  suspend fun getProfileInfo(): ProfileInfo
-
+    @Query("select * from PROFILE_INFORMATION_TABLE")
+    suspend fun getProfileInfo(): ProfileInfo
 }

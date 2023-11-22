@@ -65,7 +65,6 @@ import com.example.triptrack.utils.Constants.MONEY_VALUES_UP
 fun NewOrderScreen(
     viewModel: NewOrderViewModel,
     navigateUp: () -> Unit,
-    saveNewOrder: () -> Unit,
 ) {
     val uiState = viewModel.uiState.collectAsState()
 
@@ -133,16 +132,16 @@ fun NewOrderScreen(
             Spacer(modifier = Modifier.height(20.dp))
 
             NewOrderCard(
-                selectedEmployer = uiState.value.selectedEmployer,
+                selectedEmployer = uiState.value.employerName,
                 employers = uiState.value.employerList,
                 taxChecked = uiState.value.tax,
-                paymentChecked = uiState.value.pay,
+                paymentChecked = uiState.value.payment,
                 profit = viewModel.profitValue,
                 cost = viewModel.costValue,
                 expanded = viewModel.expanded,
                 textFieldSize = viewModel.textFieldSize,
-                profitUpdate = { viewModel.profitUpdate(it) },
-                costUpdate = { viewModel.costUpdate(it) },
+                profitUpdate = { viewModel.profitUpdateNotState(it) },
+                costUpdate = { viewModel.costUpdateNotState(it) },
                 selectedEmployerUpdate = { viewModel.selectedEmployerUpdate(it) },
                 expandedUpdate = { viewModel.expandedUpdate(it) },
                 textFieldSizeUpdate = { viewModel.textFieldSizeUpdate(it) },
@@ -168,7 +167,7 @@ fun NewOrderScreen(
                 )
             }
             TextButton(
-                onClick = { saveNewOrder() },
+                onClick = { if (viewModel.saveNewOrder()) navigateUp() },
 
                 modifier = Modifier
                     .padding(top = 20.dp)
@@ -199,7 +198,7 @@ fun NewOrderScreen(
 fun NewOrderCard(
     selectedEmployer: String,
     selectedEmployerUpdate: (String) -> Unit,
-    employers: MutableSet<String>,
+    employers: List<String>,
     taxChecked: Boolean,
     paymentChecked: Boolean,
     profit: String,
@@ -235,13 +234,17 @@ fun NewOrderCard(
                 tooltipState = taxTooltipState,
                 checkedUpdate = taxCheckedUpdate,
                 checked = taxChecked,
-                text = stringResource(id = R.string.tax),
+                title = stringResource(id = R.string.tax),
+                text = stringResource(id = R.string.tax_calc_and_for_new_version),
+                modifier = Modifier.size(height = 40.dp, width = 130.dp),
             )
             CheckboxTooltip(
                 tooltipState = paymentTooltipState,
                 checkedUpdate = paymentCheckedUpdate,
                 checked = paymentChecked,
-                text = stringResource(id = R.string.payment),
+                title = stringResource(id = R.string.payment),
+                text = stringResource(id = R.string.profit_calc_and_for_new_version),
+                modifier = Modifier.size(height = 40.dp, width = 140.dp),
             )
         }
         AutoComplete(
@@ -330,7 +333,10 @@ fun NewOrderCard(
 @Preview(showBackground = true)
 fun NewOrderScreenPreview() {
     val newOrderViewModel: NewOrderViewModel = hiltViewModel()
-    NewOrderScreen(newOrderViewModel, { }, {})
+    NewOrderScreen(
+        viewModel = newOrderViewModel,
+        {},
+    )
 }
 
 // TODO onclick

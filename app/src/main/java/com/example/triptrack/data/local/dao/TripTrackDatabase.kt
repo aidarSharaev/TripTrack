@@ -8,19 +8,19 @@ import com.example.triptrack.model.Order
 import com.example.triptrack.model.ProfileInfo
 
 @Database(
-  entities = [
-    Employer::class,
-    ProfileInfo::class,
-    BankData::class,
-    Order::class],
-  version = 1,
-  exportSchema = false
+    entities = [
+        Employer::class,
+        ProfileInfo::class,
+        BankData::class,
+        Order::class,
+    ],
+    version = 1,
+    exportSchema = false,
 )
 abstract class TripTrackDatabase : RoomDatabase() {
 
-  abstract fun bankDataDao(): BankDataDao
-  abstract fun employerDao(): EmployerDao
-  abstract fun orderDao(): OrderDao
-  abstract fun profileInfoDao(): ProfileInfoDao
-
+    abstract fun bankDataDao(): BankDataDao
+    abstract fun employerDao(): EmployerDao
+    abstract fun orderDao(): OrderDao
+    abstract fun profileInfoDao(): ProfileInfoDao
 }
