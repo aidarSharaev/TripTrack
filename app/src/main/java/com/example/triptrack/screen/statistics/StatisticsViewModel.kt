@@ -1,11 +1,10 @@
 package com.example.triptrack.screen.statistics
 
 import android.util.Log
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import co.yml.charts.common.model.Point
 import com.example.triptrack.domain.usecaces.local_data.order.OrderUseCases
 import com.example.triptrack.utils.DATE
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,12 +27,17 @@ class StatisticsViewModel @Inject constructor(
     private var _tempMonth = ""
     private var _tempYear = ""
 
-    private val currentDate = DATE.currentDate.split("/")
+    private val arrayList: MutableList<Point> = mutableStateListOf(
+        Point(0f, 0f),
+        Point(0f, 0f),
+        Point(0f, 0f),
+        Point(0f, 0f),
+        Point(0f, 0f),
+    )
 
-    var maxBy by mutableFloatStateOf(0f)
-        private set
-    var minBy by mutableFloatStateOf(Float.MAX_VALUE)
-        private set
+    var maxValue = -1
+    var minValue = Int.MAX_VALUE
+    private val currentDate = DATE.currentDate.split("/")
 
     init {
         _uiState.value.month = if (currentDate[1].length == 1) "0$currentDate[1]" else currentDate[1]
@@ -42,6 +46,7 @@ class StatisticsViewModel @Inject constructor(
         _tempYear = _uiState.value.year
         determinePreviousMonth()
         getOrderMonth()
+        addLabelForAxis()
     }
 
     /* сбор всех поездок к определенному месяцу
@@ -51,7 +56,7 @@ class StatisticsViewModel @Inject constructor(
     за 20й месяц - 7+10+23+12
     к этому месяцу - 7+10+23+12+43
 
-    заказы 5 месяцев назад
+    общее число заказов
     * */
     private fun getOrderMonth() {
         orderUseCases.getOrderCount()
@@ -59,41 +64,46 @@ class StatisticsViewModel @Inject constructor(
                 _uiState.update { newState ->
                     newState.copy(totalOrderCount = count)
                 }
+                addLabelForAxis()
             }.launchIn(viewModelScope)
-        orderUseCases.getCountOfOrdersMonth(pair = _uiState.value.month_year[4]).onEach { count ->
-            // month_year[4].ordersCount = count
-            _uiState.update { newState ->
-                newState.copy(orders5MonthsAgo = count)
-            }
-        }.launchIn(viewModelScope)
-        orderUseCases.getCountOfOrdersMonth(pair = _uiState.value.month_year[3]).onEach { count ->
-            // month_year[3].ordersCount = count
-            _uiState.update { newState ->
-                newState.copy(orders4MonthsAgo = count)
-            }
-        }.launchIn(viewModelScope)
-        orderUseCases.getCountOfOrdersMonth(pair = _uiState.value.month_year[2]).onEach { count ->
-            // month_year[2].ordersCount = count
-            _uiState.update { newState ->
-                newState.copy(orders3MonthsAgo = count)
-            }
-        }.launchIn(viewModelScope)
-        orderUseCases.getCountOfOrdersMonth(pair = _uiState.value.month_year[1]).onEach { count ->
-            // month_year[1].ordersCount = count
-            _uiState.update { newState ->
-                newState.copy(ordersToLastMonth = count)
-            }
-        }.launchIn(viewModelScope)
-        orderUseCases.getCountOfOrdersMonth(pair = _uiState.value.month_year[0]).onEach { count ->
-            // month_year[0].ordersCount = count
-            _uiState.update { newState ->
-                newState.copy(ordersByThisMonth = count)
-            }
-        }.launchIn(viewModelScope)
+        orderUseCases.getCountOfOrdersMonth(pair = _uiState.value.monthYear[4])
+            .onEach { count ->
+                _uiState.update { newState ->
+                    newState.copy(orders5MonthsAgo = count)
+                }
+                addLabelForAxis()
+            }.launchIn(viewModelScope)
+        orderUseCases.getCountOfOrdersMonth(pair = _uiState.value.monthYear[3])
+            .onEach { count ->
 
+                _uiState.update { newState ->
+                    newState.copy(orders4MonthsAgo = count)
+                }
+                addLabelForAxis()
+            }.launchIn(viewModelScope)
+        orderUseCases.getCountOfOrdersMonth(pair = _uiState.value.monthYear[2])
+            .onEach { count ->
 
+                _uiState.update { newState ->
+                    newState.copy(orders3MonthsAgo = count)
+                }
+                addLabelForAxis()
+            }.launchIn(viewModelScope)
+        orderUseCases.getCountOfOrdersMonth(pair = _uiState.value.monthYear[1])
+            .onEach { count ->
+                _uiState.update { newState ->
+                    newState.copy(ordersToLastMonth = count)
+                }
+                addLabelForAxis()
+            }.launchIn(viewModelScope)
+        orderUseCases.getCountOfOrdersMonth(pair = _uiState.value.monthYear[0])
+            .onEach { count ->
 
-
+                _uiState.update { newState ->
+                    newState.copy(ordersByThisMonth = count)
+                }
+                addLabelForAxis()
+            }.launchIn(viewModelScope)
     }
 
     fun put() {
@@ -104,7 +114,7 @@ class StatisticsViewModel @Inject constructor(
         Log.d("AAAAr", _uiState.value.orders5MonthsAgo.toString())
         Log.d("AAAAr", _uiState.value.totalOrderCount.toString())
         Log.d("AAAAr", "")
-        // getOrderMonth()
+        addLabelForAxis()
     }
 
     private fun determinePreviousMonth() {
@@ -122,7 +132,7 @@ class StatisticsViewModel @Inject constructor(
         }
         _uiState.update {
             it.copy(
-                month_year = list,
+                monthYear = list,
             )
         }
         list.forEach {
@@ -130,48 +140,58 @@ class StatisticsViewModel @Inject constructor(
         }
     }
 
-//    private fun addLabelForAxis() {
-//        val totalCount = mutableListOf<Point>()
-//        val monthlyCount = mutableListOf<Point>()
-//
-////        val ordersPerMonthLabel = mutableListOf<String>()
-////        val monthlyOrdersLabel = mutableListOf<Float>()
-//
-//        repeat(5) { index ->
-//            pointsDataPerMonth.add(
-//                Point(
-//                    index.toFloat(),
-//                    uiState.value.ordersPerMonth[index].count.toFloat(),
-//                ),
-//            )
-//            ordersPerMonthLabel.add(uiState.value.ordersPerMonth[index].month.substring(0, 3))
-//        }
-//        repeat(uiState.value.monthlyOrders.size) { index ->
-//            pointsDataMonthly.add(
-//                Point(
-//                    uiState.value.monthlyOrders[index].month.toFloat(),
-//                    uiState.value.monthlyOrders[index].count.toFloat(),
-//                ),
-//            )
-//            monthlyOrdersLabel.add(uiState.value.monthlyOrders[index].count.toFloat())
-//        }
-//
-//        setMaxMin()
-//
-//        _uiState.update { newState ->
-//            newState.copy(
-//                pointsDataPerMonth = pointsDataPerMonth,
-//                pointsDataMonthly = pointsDataMonthly,
-//                ordersPerMonthLabel = ordersPerMonthLabel,
-//                monthlyOrdersLabel = monthlyOrdersLabel,
-//            )
-//        }
-//    }
-//
-//    private fun setMaxMin() {
-//        uiState.value.pointsDataMonthly.onEach {
-//            maxBy = max(it.y, maxBy)
-//            minBy = min(it.y, minBy)
-//        }
-//    }
+    private fun addLabelForAxis() {
+        val intList = listOf(
+            uiState.value.totalOrderCount,
+            uiState.value.ordersByThisMonth,
+            uiState.value.ordersToLastMonth,
+            uiState.value.orders3MonthsAgo,
+            uiState.value.orders4MonthsAgo,
+            uiState.value.orders5MonthsAgo,
+        )
+
+        _uiState.update {
+            it.copy(
+                listOrders = (intList.slice(1..intList.size - 1).sorted().toSet()),
+            )
+        }
+
+        var temp = 0
+
+        repeat(5) { index ->
+            arrayList[index] = Point(
+                (4 - index).toFloat(),
+                (intList.first() - temp).toFloat(),
+            )
+            if (index != 4) {
+                temp += intList[index + 1]
+            }
+        }
+
+        maxValue = intList.first()
+        minValue = intList.first() - temp
+
+        _uiState.update {
+            it.copy(
+                totalCount = arrayList.reversed().toList(),
+            )
+        }
+
+        repeat(5) { index ->
+            arrayList[index] = Point(
+                uiState.value.monthYear[4 - index].month.toFloat(),
+                intList[5 - index].toFloat(),
+            )
+        }
+
+        arrayList.forEach {
+            Log.d("AAAA", "${it.x} ${it.y}")
+        }
+
+        _uiState.update { newState ->
+            newState.copy(
+                monthlyCount = arrayList.toList(),
+            )
+        }
+    }
 }

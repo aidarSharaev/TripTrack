@@ -8,12 +8,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Button
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
@@ -44,6 +45,7 @@ import co.yml.charts.ui.piechart.models.PieChartData
 import com.example.triptrack.R
 import com.example.triptrack.presentation.navgraph.Dimens.navBarPadding
 import com.example.triptrack.ui.theme.fontItalic
+import com.example.triptrack.utils.Constants.MONTHS
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -51,123 +53,118 @@ fun StatisticsScreen(
     viewModel: StatisticsViewModel,
     navController: NavHostController,
 ) {
-    val uiState = viewModel.uiState.collectAsState()
-    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        TextField(
-            value = "uiState.value.currentMonth",
-            onValueChange = {
-
-            },
-        )
-        Button(
-            modifier = Modifier.padding(top = 150.dp),
-            onClick = { viewModel.put() },
-        ) {}
-    }
-//    val uiState = viewModel.uiState.collectAsState()
-//
-//    val pagerState = rememberPagerState(
-//        pageCount = { 2 },
-//    )
-//    HorizontalPager(
-//        state = pagerState,
-//        modifier = Modifier
-//            .statusBarsPadding()
-//            .fillMaxSize(),
-//    ) { page ->
-//        when (page) {
-//            0 -> {
-//                StatOrderPage(
-//                    monthlyOrdersLabel = uiState.value.monthlyOrdersLabel,
-//                    ordersPerMonthLabel = uiState.value.ordersPerMonthLabel,
-//                    pointsDataMonthly = uiState.value.pointsDataMonthly,
-//                    pointsDataPerMonth = uiState.value.pointsDataPerMonth,
-//                    maxBy = viewModel.maxBy,
-//                    minBy = viewModel.minBy,
-//                )
-//            }
-//
-//            1 -> {
-//                Donut()
-//            }
-//
-//            else -> {
-//                StatOrderPage(
-//                    monthlyOrdersLabel = uiState.value.monthlyOrdersLabel,
-//                    ordersPerMonthLabel = uiState.value.ordersPerMonthLabel,
-//                    pointsDataMonthly = uiState.value.pointsDataMonthly,
-//                    pointsDataPerMonth = uiState.value.pointsDataPerMonth,
-//                    maxBy = viewModel.maxBy,
-//                    minBy = viewModel.minBy,
-//                )
-//            }
-//        }
+//    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+//        TextField(
+//            value = "uiState.value.currentMonth",
+//            onValueChange = {
+//            },
+//        )
+//        Button(
+//            modifier = Modifier
+//                .padding(top = 150.dp)
+//                .size(100.dp),
+//            onClick = { viewModel.put() },
+//        ) {}
 //    }
+
+    val uiState = viewModel.uiState.collectAsState()
+
+    val pagerState = rememberPagerState(
+        pageCount = { 2 },
+    )
+    HorizontalPager(
+        state = pagerState,
+        modifier = Modifier
+            .statusBarsPadding()
+            .fillMaxSize(),
+    ) { page ->
+        when (page) {
+            0 -> {
+                StatOrderPage(
+                    totalCount = uiState.value.totalCount,
+                    monthlyCount = uiState.value.monthlyCount,
+                    set = uiState.value.listOrders,
+                    minBy = viewModel.minValue.toFloat(),
+                    maxBy = viewModel.maxValue.toFloat(),
+                )
+            }
+
+            1 -> {
+                // Donut()
+            }
+
+            else -> {
+                // StatOrderPage(totalCount = uiState.value.totalCount, monthlyCount = uiState.value.monthlyCount)
+            }
+        }
+    }
 }
 
 @Composable
 fun StatOrderPage(
-    monthlyOrdersLabel: MutableList<Float>,
-    pointsDataMonthly: MutableList<Point>,
-    pointsDataPerMonth: MutableList<Point>,
-    ordersPerMonthLabel: MutableList<String>,
+    totalCount: List<Point>,
+    monthlyCount: List<Point>,
+    set: Set<Int>,
     maxBy: Float,
     minBy: Float,
 ) {
-    val steps = 5
-    val yScale = (((maxBy - minBy) / steps) + 1).toInt()
+    val plotSteps = (maxBy - minBy) / 4
 
-    val xAxisDataMonthly = AxisData.Builder().axisStepSize(48.dp).backgroundColor(Color.Transparent)
-        .steps(pointsDataMonthly.size)
+    val xAxisDataTotal = AxisData.Builder()
+        .axisStepSize(60.dp)
+        .backgroundColor(Color.Transparent)
+        .steps(4)
         .labelData { i ->
-            if (i < pointsDataMonthly.size) {
-                pointsDataMonthly[i].x.formatToSinglePrecision()
+            if (i == 0) {
+                "  0"
             } else {
-                (pointsDataMonthly.last().x + 1).formatToSinglePrecision()
+                (totalCount[i].x).formatToSinglePrecision()
             }
         }
-        .labelAndAxisLinePadding(15.dp).build()
+        .labelAndAxisLinePadding(15.dp)
+        .build()
 
-    val yAxisDataMonthly =
-        AxisData.Builder().steps(steps).axisStepSize(75.dp).backgroundColor(Color.Transparent)
-            .labelAndAxisLinePadding(20.dp)
-            .labelData { i -> (i * yScale + minBy).toString() }.build()
+    val yAxisDataTotal = AxisData.Builder()
+        .axisStepSize(60.dp)
+        .backgroundColor(Color.Transparent)
+        .steps(4)
+        .labelAndAxisLinePadding(20.dp)
+        .labelData { i ->
+            (minBy + (i * plotSteps)).toString()
+        }
+        .build()
 
-    val xAxisDataPerMonth =
-        AxisData.Builder()
-            .axisStepSize(48.dp)
-            .backgroundColor(Color.Transparent)
-            .steps(pointsDataPerMonth.size).labelData { i ->
-                "A"
-//                if (i < ordersPerMonthLabel.size) {
-//                    ordersPerMonthLabel[i]
-//                }
-// i                else {
-//                    val it = MONTHS.indexOf(ordersPerMonthLabel.last()) + 1
-//                    if (it == MONTHS.size - 1) MONTHS[it] else MONTHS[0]
-//                }
-            }
-            .labelAndAxisLinePadding(15.dp).build()
+    val xAxisDataMonthly = AxisData.Builder()
+        .axisStepSize(60.dp)
+        .backgroundColor(Color.Transparent)
+        .steps(4)
+        .labelData { i ->
+            MONTHS.getOrDefault(
+                key = (monthlyCount[i].x.toInt()).toString(),
+                defaultValue = "Январь",
+            ).substring(0, 3)
+        }
+        .labelAndAxisLinePadding(15.dp)
+        .build()
 
-    val yAxisDataPerMonth =
-        AxisData.Builder()
-            .steps(steps - 1)
-            .axisStepSize(75.dp)
-            .backgroundColor(Color.Transparent)
-            .labelAndAxisLinePadding(20.dp)
-            .labelData { i -> pointsDataPerMonth[i].y.formatToSinglePrecision() }
-            .build()
+    val yAxisDataMonthly = AxisData.Builder()
+        .steps(set.size-1)
+        .axisStepSize(75.dp)
+        .backgroundColor(Color.Transparent)
+        .labelAndAxisLinePadding(20.dp)
+        .labelData { i -> set.elementAtOrNull(i).toString()?:"0" }
+        .build()
 
-    val lineChartDataBy = lineChartBuilder(
-        xAxisData = xAxisDataMonthly,
-        yAxisData = yAxisDataMonthly,
-        dataPoints = pointsDataMonthly,
+    val lineChartTotal = lineChartBuilder(
+        xAxisData = xAxisDataTotal,
+        yAxisData = yAxisDataTotal,
+        dataPoints = totalCount,
     )
 
-    val lineChartDataPer = lineChartBuilder(
-        xAxisData = xAxisDataPerMonth,
-        yAxisData = yAxisDataPerMonth,
-        dataPoints = pointsDataPerMonth,
+    val lineChartMonthly = lineChartBuilder(
+        xAxisData = xAxisDataMonthly,
+        yAxisData = yAxisDataMonthly,
+        dataPoints = monthlyCount,
     )
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -179,15 +176,13 @@ fun StatOrderPage(
             TextForStat(text = stringResource(R.string.monthly_orders))
         }
         item {
-            SurfaceBoxWithElevation(lineChartData = lineChartDataBy)
+            SurfaceBoxWithElevation(lineChartData = lineChartTotal)
         }
         item {
-            TextForStat(
-                text = stringResource(R.string.orders_per_month),
-            )
+            TextForStat(text = stringResource(R.string.orders_per_month))
         }
         item {
-            SurfaceBoxWithElevation(lineChartData = lineChartDataPer)
+            SurfaceBoxWithElevation(lineChartData = lineChartMonthly)
         }
     }
 }

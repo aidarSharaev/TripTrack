@@ -1,5 +1,6 @@
 package com.example.triptrack.presentation.navgraph
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Home
@@ -12,6 +13,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
@@ -22,7 +24,8 @@ import com.example.triptrack.screen.home.HomeScreen
 import com.example.triptrack.screen.home.HomeScreenViewModel
 import com.example.triptrack.screen.new_order_screen.NewOrderScreen
 import com.example.triptrack.screen.new_order_screen.NewOrderViewModel
-import com.example.triptrack.screen.profile.ProfileScreen
+import com.example.triptrack.screen.profile.UserScreen
+import com.example.triptrack.screen.profile.UserViewModel
 import com.example.triptrack.screen.statistics.StatisticsScreen
 import com.example.triptrack.screen.statistics.StatisticsViewModel
 
@@ -75,6 +78,7 @@ fun HomeNavigator(
         NavHost(
             navController = navController,
             startDestination = startDestination,
+            modifier = Modifier.padding(bottom = bottomPadding)
         ) {
             composable(route = Route.HomeScreen.route) {
                 val viewModel: HomeScreenViewModel = hiltViewModel()
@@ -103,12 +107,16 @@ fun HomeNavigator(
             }
 
             composable(route = Route.ProfileScreen.route) {
-                ProfileScreen()
+                val viewModel: UserViewModel = hiltViewModel()
+                UserScreen(
+                    navController = navController,
+                    viewModel = viewModel
+                )
             }
 
-            composable(route = Route.ProfileScreen.route) {
-                ProfileScreen()
-            }
+//            composable(route = Route.ProfileScreen.route) {
+//                ProfileScreen()
+//            }
         }
     }
 }
