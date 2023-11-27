@@ -15,31 +15,28 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.triptrack.R
@@ -47,166 +44,164 @@ import com.example.triptrack.presentation.component.bottomBorder
 import com.example.triptrack.ui.theme.fontRegular
 
 @Composable
-fun ProfileScreen() {
-    var a by remember {
-        mutableStateOf("")
-    }
+fun ProfileScreen(
+    viewModel: ProfileViewModel,
+    navigateUp: () -> Unit,
+) {
+    val uiState by viewModel.uiState.collectAsState()
 
     val focusManager = LocalFocusManager.current
     val context = LocalContext.current
 
     Scaffold(
         topBar = {
-            TopBar()
+            TopBar(navigateUp = navigateUp)
         },
-    ) {
+    ) { it ->
         Column(
-            modifier = Modifier.padding(it).fillMaxSize().background(Color.LightGray),
+            modifier = Modifier
+                .padding(it)
+                .fillMaxSize()
+                .background(Color.LightGray),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Row(
                 modifier = Modifier
                     .padding(horizontal = 20.dp)
-                    .padding(top = 40.dp)
+                    .padding(top = 30.dp)
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-                TextField(
-                    shape = RoundedCornerShape(5.dp),
+                ProfileTextField(
+                    label = stringResource(R.string.first_name),
                     modifier = Modifier
-                        .width(150.dp)
                         .height(60.dp)
-                        .bottomBorder(0.dp, Color.Transparent),
-                    value = "9216 157617",
-                    onValueChange = {},
-                    colors = TextFieldDefaults.colors(
-                        unfocusedContainerColor = Color.White,
-                        unfocusedIndicatorColor = Color.Transparent,
-                    ),
-                    label = { Text(text = "Паспорт", fontSize = 12.sp) },
-                    textStyle = TextStyle(fontSize = 15.sp, fontFamily = fontRegular),
-
+                        .width(150.dp),
+                    value = uiState.firstName,
+                    onValueChange = { string -> viewModel.setFirstNameValue(string) },
+                    keyboardActions = KeyboardActions {
+                        focusManager.clearFocus()
+                    },
+                    keyboardType = KeyboardType.Text,
                 )
-                TextField(
-                    shape = RoundedCornerShape(5.dp),
+                ProfileTextField(
+                    label = stringResource(R.string.second_name),
                     modifier = Modifier
-                        .width(150.dp)
                         .height(60.dp)
-                        .bottomBorder(0.dp, Color.Transparent),
-                    value = "166014422974",
-                    onValueChange = {},
-                    colors = TextFieldDefaults.colors(
-                        unfocusedContainerColor = Color.White,
-                        unfocusedIndicatorColor = Color.Transparent,
-                    ),
-                    label = { Text(text = "ИНН", fontSize = 12.sp) },
-                    textStyle = TextStyle(fontSize = 15.sp, fontFamily = fontRegular),
-
+                        .width(150.dp),
+                    value = uiState.lastName,
+                    onValueChange = { string -> viewModel.setLastNameValue(string) },
+                    keyboardActions = KeyboardActions {
+                        focusManager.clearFocus()
+                    },
+                    keyboardType = KeyboardType.Text,
+                )
+            }
+            Row(
+                modifier = Modifier
+                    .padding(horizontal = 20.dp)
+                    .padding(top = 30.dp)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                ProfileTextField(
+                    label = stringResource(R.string.passport),
+                    modifier = Modifier
+                        .height(60.dp)
+                        .width(150.dp),
+                    value = uiState.passport,
+                    onValueChange = { string -> viewModel.setPassportValue(string) },
+                    keyboardActions = KeyboardActions {
+                        focusManager.clearFocus()
+                    },
+                )
+                ProfileTextField(
+                    label = stringResource(R.string.inn),
+                    modifier = Modifier
+                        .height(60.dp)
+                        .width(150.dp),
+                    value = uiState.inn,
+                    onValueChange = { string -> viewModel.setInnValue(string) },
+                    keyboardActions = KeyboardActions {
+                        focusManager.clearFocus()
+                    },
                 )
             }
 
-            TextField(
-                shape = RoundedCornerShape(5.dp),
+            ProfileTextField(
+                label = stringResource(R.string.snils),
                 modifier = Modifier
                     .padding(horizontal = 20.dp)
                     .padding(top = 30.dp)
-                    .height(60.dp)
+                    .height(80.dp)
                     .fillMaxWidth(),
-                value = "160-798-243 92",
-                onValueChange = {},
-                colors = TextFieldDefaults.colors(
-                    unfocusedContainerColor = Color.White,
-                    unfocusedIndicatorColor = Color.Transparent,
-                ),
-                label = { Text(text = "СНИЛС", fontSize = 12.sp) },
-                textStyle = TextStyle(fontSize = 15.sp, fontFamily = fontRegular),
-            )
-
-            TextField(
-                value = a,
-                onValueChange = { itt ->
-                    a = itt
-                },
-                modifier = Modifier
-                    .padding(horizontal = 20.dp)
-                    .padding(top = 30.dp)
-                    .height(120.dp)
-                    .fillMaxWidth(),
-                shape = RoundedCornerShape(5.dp),
-                colors = TextFieldDefaults.colors(
-                    unfocusedContainerColor = Color.White,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    focusedIndicatorColor = Color.LightGray,
-                    focusedContainerColor = colorResource(id = R.color.aqua),
-                ),
-                label = { Text(text = "Реквизиты", fontSize = 12.sp) },
-                textStyle = TextStyle(fontSize = 15.sp, fontFamily = fontRegular),
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Done,
-                ),
+                value = uiState.snils,
+                onValueChange = { string -> viewModel.setSnilsValue(string) },
                 keyboardActions = KeyboardActions {
                     focusManager.clearFocus()
                 },
-                placeholder = { Text(text = "Введите реквизиты") },
             )
 
-            TextButton(
+            ProfileTextField(
+                label = stringResource(R.string.requisites),
                 modifier = Modifier
                     .padding(horizontal = 20.dp)
                     .padding(top = 30.dp)
-                    .height(60.dp)
+                    .height(100.dp)
                     .fillMaxWidth(),
-                shape = RoundedCornerShape(5.dp),
+                value = uiState.requisites,
+                onValueChange = { string -> viewModel.setRequisitesValue(string) },
+                keyboardActions = KeyboardActions {
+                    focusManager.clearFocus()
+                },
+                keyboardType = KeyboardType.Text,
+            )
+
+            ProfileButton(
+                text = stringResource(id = R.string.send_data),
+                color = Color.White,
                 onClick = {
                     Intent(Intent.ACTION_SEND).also { intent ->
-                        intent.putExtra(Intent.EXTRA_TEXT, "hi")
+                        intent.putExtra(
+                            Intent.EXTRA_TEXT,
+                            "" +
+                                "Имя: ${uiState.firstName}\n" +
+                                "Фамилия: ${uiState.lastName}\n" +
+                                "Паспорт: ${uiState.passport}\n" +
+                                "ИНН: ${uiState.inn}\n" +
+                                "СНИЛС: ${uiState.snils}\n" +
+                                "Реквизиты:\n${uiState.inn}\n",
+                        )
                         intent.type = "text/plain"
                         if (intent.resolveActivity(context.packageManager) != null) {
                             context.startActivity(intent)
                         }
                     }
                 },
-                colors = ButtonDefaults.buttonColors(containerColor = Color.White),
-            ) {
-                Text(
-                    text = "Открыть Мой Налог",
-                    fontSize = 17.sp,
-                    fontFamily = fontRegular,
-                    color = Color.Black,
-                )
-            }
+            )
+
+            ProfileButton(
+                onClick = {
+                    viewModel.saveNewData()
+                },
+            )
         }
     }
 }
-
-// private fun openGNIVTSSelfEmployed(context: Context) {
-//    var launchIntent: Intent? = null
-//    try {
-//        launchIntent = context.packageManager.getLaunchIntentForPackage("com.huawei.calendar")
-//    } catch (ignored: Exception) {
-//    }
-//    if (launchIntent != null) {
-//        launchIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-//        context.startActivity(launchIntent)
-//    } else {
-//        launchIntent = context.packageManager.getLaunchIntentForPackage("com.huawei.calendar")
-//        context.startActivity(launchIntent)
-//        Log.d("AAAA", "else")
-//    }
-// }
 
 // "com.gnivts.selfemployed"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBar() {
+private fun TopBar(
+    navigateUp: () -> Unit,
+) {
     TopAppBar(
         title = {
             Text(text = "Профиль")
         },
         navigationIcon = {
-            IconButton(onClick = {}) {
+            IconButton(onClick = { navigateUp() }) {
                 Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
             }
         },
@@ -214,7 +209,63 @@ fun TopBar() {
 }
 
 @Composable
-@Preview(showBackground = true)
-fun ProfileScreenPreview() {
-    ProfileScreen()
+private fun ProfileTextField(
+    value: String,
+    label: String,
+    placeholder: String = stringResource(id = R.string.enter_data),
+    modifier: Modifier,
+    onValueChange: (String) -> Unit,
+    keyboardType: KeyboardType = KeyboardType.Number,
+    keyboardActions: KeyboardActions,
+) {
+    TextField(
+        shape = RoundedCornerShape(5.dp),
+        modifier = modifier
+            .bottomBorder(0.dp, Color.Transparent),
+        value = value,
+        onValueChange = {
+            onValueChange(it)
+        },
+        colors = TextFieldDefaults.colors(
+            unfocusedContainerColor = Color.White,
+            unfocusedIndicatorColor = Color.Transparent,
+            focusedIndicatorColor = Color.Transparent,
+        ),
+        label = { Text(text = label, fontSize = 12.sp) },
+        placeholder = {
+            Text(text = placeholder, fontSize = 12.sp, fontFamily = fontRegular)
+        },
+        textStyle = TextStyle(fontSize = 15.sp, fontFamily = fontRegular),
+        keyboardActions = keyboardActions,
+        keyboardOptions = KeyboardOptions(
+            keyboardType = keyboardType,
+            imeAction = ImeAction.Done,
+        ),
+    )
+}
+
+@Composable
+private fun ProfileButton(
+    color: Color = Color.Green,
+    text: String = stringResource(R.string.save_change),
+    onClick: () -> Unit,
+) {
+    Button(
+        onClick = { onClick() },
+        shape = RoundedCornerShape(5.dp),
+        modifier = Modifier
+            .padding(horizontal = 20.dp)
+            .padding(top = 30.dp)
+            .height(60.dp)
+            .fillMaxWidth(),
+
+        colors = ButtonDefaults.buttonColors(containerColor = color),
+    ) {
+        Text(
+            text = text,
+            fontSize = 17.sp,
+            fontFamily = fontRegular,
+            color = Color.Black,
+        )
+    }
 }

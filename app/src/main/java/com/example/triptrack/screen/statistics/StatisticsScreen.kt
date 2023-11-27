@@ -148,11 +148,11 @@ fun StatOrderPage(
         .build()
 
     val yAxisDataMonthly = AxisData.Builder()
-        .steps(set.size-1)
+        .steps(set.size - 1)
         .axisStepSize(75.dp)
         .backgroundColor(Color.Transparent)
         .labelAndAxisLinePadding(20.dp)
-        .labelData { i -> set.elementAtOrNull(i).toString()?:"0" }
+        .labelData { i -> set.elementAtOrNull(i).toString() ?: "0" }
         .build()
 
     val lineChartTotal = lineChartBuilder(

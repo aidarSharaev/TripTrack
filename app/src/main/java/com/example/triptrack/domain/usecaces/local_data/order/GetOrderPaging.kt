@@ -6,11 +6,10 @@ import com.example.triptrack.model.Order
 import kotlinx.coroutines.flow.Flow
 
 class GetOrderPaging(
-  private val orderRepository: OrderRepository
+    private val orderRepository: OrderRepository,
 ) {
 
-  operator fun invoke () : Flow<PagingData<Order>> {
-    return orderRepository.loadAllOrdersPaged()
-  }
-
+    operator fun invoke(): Flow<PagingData<Order>> {
+        return orderRepository.loadAllOrdersPaged()
+    }
 }

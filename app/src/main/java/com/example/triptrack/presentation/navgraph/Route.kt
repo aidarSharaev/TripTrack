@@ -5,7 +5,7 @@ sealed class Route(
 ) {
 
     object AppStartNavigation : Route(route = "appStartNavigation")
-    object ProfileScreenNavigation : Route(route = "profileScreenNavigation")
+    object UserScreenNavigation : Route(route = "profileScreenNavigation")
     object HomeScreenNavigation : Route(route = "homeScreenNavigation")
     object StatScreenNavigation : Route(route = "statScreenNavigation")
 
@@ -19,7 +19,7 @@ sealed class Route(
     object NewOrderScreen : Route(route = "newOrderScreen")
     object OrderListScreen : Route(route = "onBoardingScreen")
     object EmployerListScreen : Route(route = "employerListScreen")
-    object AccountScreen : Route(route = "accountScreen")
+    object UserScreen : Route(route = "userScreen")
 
     object FirstEntryScreen : Route(route = "firstEntryScreen")
 }

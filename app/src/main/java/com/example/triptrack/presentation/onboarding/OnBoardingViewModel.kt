@@ -6,16 +6,18 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.triptrack.domain.usecaces.app_entry.AppEntryUseCases
+import com.example.triptrack.domain.usecaces.local_data.profile_info.ProfileUseCases
+import com.example.triptrack.model.ProfileInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class OnBoardingViewModel @Inject constructor(
     private val appEntryUseCases: AppEntryUseCases,
+    private val profileUseCases: ProfileUseCases,
 ) : ViewModel() {
 
     private fun saveAppEntry() {
@@ -45,10 +47,13 @@ class OnBoardingViewModel @Inject constructor(
     }
 
     private fun addNewUser() {
-        _uiState.update { newState ->
-            newState.copy(
-                firstName = firstName,
-                secondName = secondName,
+        viewModelScope.launch {
+            profileUseCases.insertProfile(
+                ProfileInfo(
+                    id = 0,
+                    firstName = firstName,
+                    lastName = secondName,
+                ),
             )
         }
     }

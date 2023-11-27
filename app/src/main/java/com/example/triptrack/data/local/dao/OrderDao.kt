@@ -1,5 +1,6 @@
 package com.example.triptrack.data.local.dao
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -13,7 +14,7 @@ import kotlinx.coroutines.flow.Flow
 interface OrderDao {
     // todo desc
     @Query(value = "select * from $ORDER_TABLE order by id asc")
-    fun loadAllOrdersPaged(): List<Order>
+    fun loadAllOrdersPaged(): PagingSource<Int, Order>
 
     @Query(value = "select * from $ORDER_TABLE where id = :id")
     suspend fun getOrderById(id: Int): Order

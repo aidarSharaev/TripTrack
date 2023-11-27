@@ -9,8 +9,8 @@ import com.example.triptrack.data.local.dao.ProfileInfoDao
 import com.example.triptrack.data.local.dao.TripTrackDatabase
 import com.example.triptrack.domain.repository.OrderRepository
 import com.example.triptrack.domain.usecaces.local_data.bank_data.BankDataUseCases
+import com.example.triptrack.domain.usecaces.local_data.bank_data.GetBankData
 import com.example.triptrack.domain.usecaces.local_data.bank_data.InsertBankData
-import com.example.triptrack.domain.usecaces.local_data.bank_data.UpdateBankData
 import com.example.triptrack.domain.usecaces.local_data.employer.DeleteEmployer
 import com.example.triptrack.domain.usecaces.local_data.employer.EmployerUseCases
 import com.example.triptrack.domain.usecaces.local_data.employer.GetEmployerByName
@@ -104,7 +104,9 @@ object DatabaseModule {
             insertOrder = InsertOrder(orderDao = orderDao),
             getOrderCount = OrderCount(orderDao = orderDao),
             getCountOfOrdersMonth = GetCountOfOrdersMonth(orderDao = orderDao),
-            getAbsolutelyAllOrdersExceptForLast5Months = GetAbsolutelyAllOrdersExceptForLast5Months(orderDao = orderDao)
+            getAbsolutelyAllOrdersExceptForLast5Months = GetAbsolutelyAllOrdersExceptForLast5Months(
+                orderDao = orderDao,
+            ),
         )
     }
 
@@ -127,8 +129,8 @@ object DatabaseModule {
         bankDataDao: BankDataDao,
     ): BankDataUseCases {
         return BankDataUseCases(
-            updateBankData = UpdateBankData(bankDataDao = bankDataDao),
             insertBankData = InsertBankData(bankDataDao = bankDataDao),
+            getBankData = GetBankData(bankDataDao = bankDataDao),
         )
     }
 }

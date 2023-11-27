@@ -17,5 +17,13 @@
     <string name="first_name">Имя</string>
     <string name="launch">Запустить</string>
     <string name="type_developer">Написать создателю</string>
+    <string name="write_to_developer">Написать разработчику</string>
+    <string name="passport">Паспорт</string>
+    <string name="enter_data">Введите данные</string>
+    <string name="inn">Инн</string>
+    <string name="snils">СНИЛС\n</string>
+    <string name="requisites">Реквизиты</string>
+    <string name="send_data">Отправить данные</string>
+    <string name="save_change">Сохранить изменения</string>
 
 </resources>

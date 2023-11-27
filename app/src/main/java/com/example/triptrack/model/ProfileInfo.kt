@@ -1,28 +1,13 @@
 package com.example.triptrack.model
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.example.triptrack.utils.Constants.PROFILE_INFORMATION_TABLE
 
-@Entity(
-    tableName = PROFILE_INFORMATION_TABLE,
-    foreignKeys = [
-        ForeignKey(
-            entity = BankData::class,
-            childColumns = ["recipientId"],
-            parentColumns = ["id"],
-            onUpdate = ForeignKey.CASCADE,
-            onDelete = ForeignKey.CASCADE,
-        ),
-    ],
-)
+@Entity(tableName = PROFILE_INFORMATION_TABLE)
 data class ProfileInfo(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int, // айдиха
+    @PrimaryKey(autoGenerate = false)
+    val id: Int = 0, // айдиха
     val firstName: String, // имя
     val lastName: String, // фамилия
-    @ColumnInfo(index = true)
-    val recipientId: Int, // данные
 )

@@ -20,13 +20,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
+import androidx.navigation.NavController
 import com.example.triptrack.ui.theme.fontBold
 
 @Composable
 fun HomeScreen(
     state: State<HomeState>,
-    navController: NavHostController,
+    navController: NavController,
     onClick: () -> Unit,
 ) {
     var XX by remember {

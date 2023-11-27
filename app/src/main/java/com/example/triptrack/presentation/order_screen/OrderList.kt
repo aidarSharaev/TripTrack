@@ -1,5 +1,6 @@
 package com.example.triptrack.presentation.order_screen
 
+import android.util.Log
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -51,39 +52,18 @@ import com.example.triptrack.ui.theme.fontItalic
 fun OrderList(
     orders: LazyPagingItems<Order>,
 ) {
-    val handlePagingResult = handlePagingResult(orders = orders)
-    if (handlePagingResult) {
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(all = 6.dp),
-        ) {
-            items(count = orders.itemCount) { it ->
-                orders[it]?.let {
-                    OrderCard(order = it)
-                }
+    Log.d("AAAA", orders.itemCount.toString())
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(all = 6.dp),
+    ) {
+        items(count = orders.itemCount) { it ->
+            orders[it]?.let {
+                OrderCard(order = it)
             }
         }
     }
 }
-
-//@Composable
-//@Preview(showBackground = true)
-//@Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
-//fun OrderCardPreview() {
-//    OrderCard(
-//        Order(
-//            id = 123,
-//            route = "Челны",
-//            payment = true,
-//            tax = true,
-//            date = "23-01-2003",
-//            income = 15000,
-//            wastes = 3000,
-//            profit = -12000,
-//        ),
-//    )
-//    // OrderCardShimmerEffect()
-//}
 
 val CardHeight = 128.dp
 val textSize = 18.sp
